@@ -19,6 +19,12 @@ export const LandingFooter = async () => {
           className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
         >
           <Link
+            href="/catalog"
+            className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
+          >
+            {landingTranslations("footer.catalog")}
+          </Link>
+          <Link
             href="/delivery"
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >

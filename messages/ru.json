@@ -10,6 +10,7 @@
       "returns": "Возврат и обмен",
       "cart": "Корзина",
       "audience": "Вам подойдёт",
+      "promo": "Акция",
       "catalog": "Каталог",
       "quality": "Качество",
       "order": "Заказ"
@@ -106,6 +107,10 @@
     "products": {
       "title": "Каталог товаров",
       "lead": "20 позиций на демо-данных — изображения пока плейсхолдер; после подключения фото карточки обновятся.",
+      "promoTitle": "Акционные товары",
+      "promoLead": "Товары с полем promoDiscountPercent в data/catalog.json — порядок как в массиве products.",
+      "viewFullCatalog": "Весь каталог",
+      "promoBadge": "Акция",
       "noImage": "Нет фото товара",
       "volumeUnit": "л",
       "currency": "₴",
@@ -130,8 +135,16 @@
       "delivery": "Доставка",
       "publicOffer": "Публичный договор",
       "returns": "Возврат и обмен",
-      "cart": "Корзина"
+      "cart": "Корзина",
+      "catalog": "Каталог"
     }
+  },
+  "Catalog": {
+    "metaTitle": "Каталог — Oilix",
+    "metaDescription": "Все моторные масла и товары Oilix: бренд, вязкость, объём, цена.",
+    "title": "Каталог товаров",
+    "lead": "Полный список из data/catalog.json. Изображения — плейсхолдер до подключения фото.",
+    "backHome": "На главную"
   },
   "Delivery": {
     "metaTitle": "Доставка — Oilix",

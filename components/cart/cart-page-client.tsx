@@ -7,7 +7,10 @@ import { useTranslations } from "next-intl";
 
 import { ProductImagePlaceholder } from "@/app/components/landing/product-image-placeholder";
 import { formatPriceUah } from "@/app/lib/format-price";
-import { getCatalogProductById } from "@/app/lib/mocks/catalog-products";
+import {
+  getCatalogProductById,
+  getEffectivePriceUah,
+} from "@/app/lib/mocks/catalog-products";
 import { useCart } from "@/components/cart/cart-context";
 import { NavHashLink } from "@/components/nav-hash-link";
 
@@ -35,7 +38,7 @@ export const CartPageClient = () => {
       <div className="mt-12 rounded-md border border-dashed border-border bg-muted/20 p-10 text-center dark:border-white/10">
         <p className="text-base text-muted-foreground">{cartTranslations("empty")}</p>
         <Link
-          href="/#range"
+          href="/catalog"
           className="mt-6 inline-flex items-center justify-center rounded-md bg-brand px-6 py-3 text-base font-medium text-white transition hover:brightness-110"
         >
           {cartTranslations("goToCatalog")}
@@ -52,7 +55,8 @@ export const CartPageClient = () => {
           if (!product) {
             return null;
           }
-          const lineTotal = product.priceUah * line.quantity;
+          const unitPriceUah = getEffectivePriceUah(product);
+          const lineTotal = unitPriceUah * line.quantity;
           return (
             <li
               key={line.productId}
@@ -109,7 +113,7 @@ export const CartPageClient = () => {
 
                 <div className="text-right">
                   <p className="text-xs text-muted-foreground">
-                    {formatPriceUah(product.priceUah)} {landingTranslations("products.currency")} ×{" "}
+                    {formatPriceUah(unitPriceUah)} {landingTranslations("products.currency")} ×{" "}
                     {line.quantity}
                   </p>
                   <p className="mt-1 text-lg font-semibold tabular-nums text-foreground">

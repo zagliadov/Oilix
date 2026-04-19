@@ -1,4 +1,5 @@
 import { ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -14,6 +15,8 @@ import { NavHashLink } from "@/components/nav-hash-link";
 import {
   catalogProducts,
   getCatalogProductById,
+  getDiscountPercent,
+  getEffectivePriceUah,
 } from "@/app/lib/mocks/catalog-products";
 
 type ProductPageProps = {
@@ -36,7 +39,7 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
     };
   }
 
-  const priceFormatted = formatPriceUah(product.priceUah);
+  const priceFormatted = formatPriceUah(getEffectivePriceUah(product));
 
   return {
     title: productTranslations("metaTitle", {
@@ -63,6 +66,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
   const landingTranslations = await getTranslations("Landing");
   const productTranslations = await getTranslations("Product");
+  const discountPercent = getDiscountPercent(product);
+  const effectivePriceUah = getEffectivePriceUah(product);
 
   return (
     <div className="relative flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
@@ -73,8 +78,8 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <LanguageTransition>
         <main className="flex w-full flex-1 flex-col pb-20 pt-8">
           <SectionShell>
-            <NavHashLink
-              hash="range"
+            <Link
+              href="/catalog"
               className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
             >
               <ArrowLeft
@@ -83,7 +88,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 strokeWidth={2}
               />
               {productTranslations("backToCatalog")}
-            </NavHashLink>
+            </Link>
 
             <div className="mt-10 grid gap-10 lg:grid-cols-2 lg:gap-16">
               <ProductImagePlaceholder
@@ -95,9 +100,16 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-muted-foreground">
                   {product.brand}
                 </p>
-                <h1 className="font-display mt-2 text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                  {product.name}
-                </h1>
+                <div className="mt-2 flex flex-wrap items-center gap-2">
+                  <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                    {product.name}
+                  </h1>
+                  {discountPercent !== null ? (
+                    <span className="rounded bg-brand px-2 py-0.5 text-xs font-bold uppercase tracking-wide text-white">
+                      −{discountPercent}% · {landingTranslations("products.promoBadge")}
+                    </span>
+                  ) : null}
+                </div>
                 <p className="mt-4 text-base leading-[1.5] text-muted-foreground">
                   {productTranslations("lead")}
                 </p>
@@ -124,9 +136,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
                     <dt className="text-sm text-muted-foreground">
                       {productTranslations("price")}
                     </dt>
-                    <dd className="text-lg font-semibold tabular-nums text-foreground">
-                      {formatPriceUah(product.priceUah)}{" "}
-                      {landingTranslations("products.currency")}
+                    <dd className="text-right">
+                      {discountPercent !== null ? (
+                        <p className="text-sm text-muted-foreground line-through tabular-nums">
+                          {formatPriceUah(product.priceUah)}{" "}
+                          {landingTranslations("products.currency")}
+                        </p>
+                      ) : null}
+                      <p className="text-lg font-semibold tabular-nums text-foreground">
+                        {formatPriceUah(effectivePriceUah)}{" "}
+                        {landingTranslations("products.currency")}
+                      </p>
                     </dd>
                   </div>
                 </dl>

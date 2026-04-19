@@ -44,7 +44,7 @@ export const LandingHero = async () => {
             {landingTranslations("hero.ctaPrimary")}
           </NavHashLink>
           <NavHashLink
-            hash="range"
+            hash="promo"
             className="inline-flex items-center justify-center rounded-md border border-border bg-muted/50 px-7 py-3.5 text-base font-medium text-foreground transition hover:bg-muted dark:border-white/15 dark:bg-white/[0.04] dark:hover:border-white/25 dark:hover:bg-white/[0.07]"
           >
             {landingTranslations("hero.ctaSecondary")}

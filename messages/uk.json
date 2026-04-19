@@ -10,6 +10,7 @@
       "returns": "Повернення та обмін",
       "cart": "Кошик",
       "audience": "Вам підійде",
+      "promo": "Акція",
       "catalog": "Каталог",
       "quality": "Якість",
       "order": "Замовлення"
@@ -106,6 +107,10 @@
     "products": {
       "title": "Каталог товарів",
       "lead": "20 позицій на демо-даних — зображення поки плейсхолдер; після підключення фото картки оновляться.",
+      "promoTitle": "Акційні товари",
+      "promoLead": "Товари з полем promoDiscountPercent у data/catalog.json — порядок як у масиві products.",
+      "viewFullCatalog": "Увесь каталог",
+      "promoBadge": "Акція",
       "noImage": "Немає фото товару",
       "volumeUnit": "л",
       "currency": "₴",
@@ -130,8 +135,16 @@
       "delivery": "Доставка",
       "publicOffer": "Публічний договір",
       "returns": "Повернення та обмін",
-      "cart": "Кошик"
+      "cart": "Кошик",
+      "catalog": "Каталог"
     }
+  },
+  "Catalog": {
+    "metaTitle": "Каталог — Oilix",
+    "metaDescription": "Усі моторні оливи та товари Oilix: бренд, в’язкість, об’єм, ціна.",
+    "title": "Каталог товарів",
+    "lead": "Повний список позицій з data/catalog.json. Зображення — плейсхолдер до підключення фото.",
+    "backHome": "На головну"
   },
   "Delivery": {
     "metaTitle": "Доставка — Oilix",

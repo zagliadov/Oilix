@@ -23,15 +23,25 @@ export const LandingHeader = async () => {
           {landingTranslations("brand")}
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
-          {_.map(navLinks, (link) => (
-            <NavHashLink
-              key={link.hash}
-              hash={link.hash}
-              className="font-display text-[0.875rem] font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {landingTranslations(`nav.${link.navKey}`)}
-            </NavHashLink>
-          ))}
+          {_.map(navLinks, (link) =>
+            link.kind === "hash" ? (
+              <NavHashLink
+                key={link.hash}
+                hash={link.hash}
+                className="font-display text-[0.875rem] font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {landingTranslations(`nav.${link.navKey}`)}
+              </NavHashLink>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="font-display text-[0.875rem] font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
+              >
+                {landingTranslations(`nav.${link.navKey}`)}
+              </Link>
+            ),
+          )}
         </nav>
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 md:gap-3">
           <CartLinkButton />

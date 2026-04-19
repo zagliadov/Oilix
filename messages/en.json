@@ -10,6 +10,7 @@
       "returns": "Returns & exchange",
       "cart": "Cart",
       "audience": "For you",
+      "promo": "Offers",
       "catalog": "Catalog",
       "quality": "Quality",
       "order": "Order"
@@ -106,6 +107,10 @@
     "products": {
       "title": "Product catalog",
       "lead": "20 demo items — images are placeholders until real photos are connected.",
+      "promoTitle": "Promotional items",
+      "promoLead": "Products with promoDiscountPercent in data/catalog.json — same order as in the products array.",
+      "viewFullCatalog": "Full catalog",
+      "promoBadge": "Sale",
       "noImage": "No product image",
       "volumeUnit": "L",
       "currency": "₴",
@@ -130,8 +135,16 @@
       "delivery": "Delivery",
       "publicOffer": "Public offer",
       "returns": "Returns & exchange",
-      "cart": "Cart"
+      "cart": "Cart",
+      "catalog": "Catalog"
     }
+  },
+  "Catalog": {
+    "metaTitle": "Catalog — Oilix",
+    "metaDescription": "All engine oils and products: brand, viscosity, volume, price.",
+    "title": "Product catalog",
+    "lead": "Full list from data/catalog.json. Images are placeholders until photos are connected.",
+    "backHome": "Back to home"
   },
   "Delivery": {
     "metaTitle": "Delivery — Oilix",

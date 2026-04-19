@@ -12,7 +12,10 @@ import {
 } from "react";
 
 import { CART_STORAGE_KEY, type CartLine } from "@/app/lib/cart/cart-types";
-import { getCatalogProductById } from "@/app/lib/mocks/catalog-products";
+import {
+  getCatalogProductById,
+  getEffectivePriceUah,
+} from "@/app/lib/mocks/catalog-products";
 
 type CartContextValue = {
   lines: CartLine[];
@@ -157,7 +160,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (!product) {
           return 0;
         }
-        return product.priceUah * line.quantity;
+        return getEffectivePriceUah(product) * line.quantity;
       }),
     [lines],
   );

@@ -119,19 +119,37 @@ export const MobileNav = () => {
                 </Link>
               </li>
               {_.map(navLinks, (link) => (
-                <li key={link.hash} className="list-none">
-                  <NavHashLink
-                    hash={link.hash}
-                    className="flex w-full items-center justify-between py-4 text-base font-semibold uppercase tracking-wide text-foreground transition-colors active:text-brand sm:text-lg"
-                    onClick={closeMenu}
-                  >
-                    {landingTranslations(`nav.${link.navKey}`)}
-                    <ArrowRight
-                      className="h-5 w-5 shrink-0 text-brand/55"
-                      aria-hidden
-                      strokeWidth={2}
-                    />
-                  </NavHashLink>
+                <li
+                  key={link.kind === "hash" ? link.hash : link.href}
+                  className="list-none"
+                >
+                  {link.kind === "hash" ? (
+                    <NavHashLink
+                      hash={link.hash}
+                      className="flex w-full items-center justify-between py-4 text-base font-semibold uppercase tracking-wide text-foreground transition-colors active:text-brand sm:text-lg"
+                      onClick={closeMenu}
+                    >
+                      {landingTranslations(`nav.${link.navKey}`)}
+                      <ArrowRight
+                        className="h-5 w-5 shrink-0 text-brand/55"
+                        aria-hidden
+                        strokeWidth={2}
+                      />
+                    </NavHashLink>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className="flex w-full items-center justify-between py-4 text-base font-semibold uppercase tracking-wide text-foreground transition-colors active:text-brand sm:text-lg"
+                      onClick={closeMenu}
+                    >
+                      {landingTranslations(`nav.${link.navKey}`)}
+                      <ArrowRight
+                        className="h-5 w-5 shrink-0 text-brand/55"
+                        aria-hidden
+                        strokeWidth={2}
+                      />
+                    </Link>
+                  )}
                 </li>
               ))}
             </ul>
