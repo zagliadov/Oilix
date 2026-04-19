@@ -1,0 +1,129 @@
+{
+  "Metadata": {
+    "title": "Oilix — engine oils for your car",
+    "description": "Selection by make and engine, delivery to your door, genuine products and clear retail prices for private customers."
+  },
+  "Landing": {
+    "nav": {
+      "audience": "For you",
+      "catalog": "Catalog",
+      "quality": "Quality",
+      "order": "Order"
+    },
+    "brand": "Oilix",
+    "header": {
+      "orderCta": "Order"
+    },
+    "hero": {
+      "pills": [
+        "Delivery across Ukraine",
+        "Selection by car make",
+        "Trusted brands only"
+      ],
+      "title": "Engine oils for your car — with expert selection, delivery and peace of mind",
+      "lead": "Shop as a private customer: clear descriptions, help with specs and viscosity, orders from a single canister. No wholesale jargon — only what your car and budget need.",
+      "ctaPrimary": "Get oil advice",
+      "ctaSecondary": "Browse the catalog"
+    },
+    "audience": {
+      "title": "Oilix is a fit if you…",
+      "lead": "You drive your own car and want to buy oil with confidence — not by guesswork or a random forum tip.",
+      "points": [
+        "You want to buy oil without guessing on the shelf — with guidance on viscosity and approvals for your engine",
+        "You drive in the city and on the highway and do not want to overpay for a “universal” that does not suit your engine",
+        "You prefer to order online and receive your order by courier or pickup point",
+        "You want to know the canister is genuine and within date — no suspicious grey-market batches"
+      ]
+    },
+    "pillars": {
+      "title": "Three directions in one store",
+      "lead": "Pick an area first — engine, transmission or related fluids. It is easier than drowning in SKUs and faster to fill your cart.",
+      "items": [
+        {
+          "title": "Engine oils",
+          "body": "Synthetic and semi-synthetic for petrol and diesel: from city traffic to long trips — we help with ACEA/API classes and manufacturer approvals."
+        },
+        {
+          "title": "Gearbox and axles",
+          "body": "Fluids for automatic, CVT, DCT, transfer case and axle — so you do not mix incompatible products and damage a unit."
+        },
+        {
+          "title": "Fluids and extras in one order",
+          "body": "Brake fluid, washer, coolant, filters — get everything for a service in one cart instead of running from store to store."
+        }
+      ]
+    },
+    "quality": {
+      "title": "Why you can trust authenticity",
+      "lead": "We work with official supply chains and store products so shelf life and storage conditions are never a surprise at the next change.",
+      "bullets": [
+        "Selection by make and engine — we explain why this viscosity and class fit",
+        "Fair retail pricing: you see the price upfront, with no hidden volume-based rules",
+        "Support in chat or by phone if you hesitate between two options"
+      ],
+      "quoteLabel": "Driver tip",
+      "quote": "«The most expensive mistake is not the price per can — it is the wrong oil for your engine. Five minutes on selection beats a week in the workshop.»",
+      "quoteFooter": "For owners of passenger cars, crossovers and family vehicles who want to drive calmly and know what is under the hood."
+    },
+    "catalog": {
+      "title": "How the catalog is organized",
+      "lead": "Open a block — short, practical notes on what to consider before buying for typical driving scenarios.",
+      "blocks": [
+        {
+          "title": "01 — Passenger cars",
+          "items": [
+            "Selection by make, model and year — fewer mistakes on 5W-30, 5W-40, etc.",
+            "Turbos, diesel particulate filters and GPF — we explain in plain language why Low SAPS matters",
+            "Change intervals: what the manufacturer typically assumes and what changes with your driving style"
+          ]
+        },
+        {
+          "title": "02 — Crossovers and family cars",
+          "items": [
+            "Larger engines and loads — when reserve for temperature and oil film stability matters more",
+            "All-wheel drive and transfer case: what to watch when choosing fluids for winter and light off-road",
+            "Convenient can sizes: 4 L, 5 L or 1 L packs — so you never have too little or too much left for a top-up"
+          ]
+        },
+        {
+          "title": "03 — Beyond engine oil",
+          "items": [
+            "Oil and air filters — we remind you to replace them with the oil",
+            "Season: all-season oil vs winter viscosity — what makes sense for your region",
+            "Before you buy: send VIN or service book notes — we will help with compatibility"
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "title": "Order or ask about selection",
+      "lead": "Tell us your make, model and year — or what you are already looking at in the catalog. We will reply with options and delivery timing. You can later wire the form to email, messenger or CRM.",
+      "nameLabel": "Name",
+      "emailLabel": "Email",
+      "phoneLabel": "Phone",
+      "consent": "By submitting the form you agree to the processing of personal data — replace with text that matches your privacy policy.",
+      "submit": "Send"
+    },
+    "placeholders": {
+      "name": "How we should address you",
+      "email": "you@gmail.com",
+      "phone": "+380 ..."
+    },
+    "footer": {
+      "copyright": "© {year} Oilix. A store for private customers."
+    }
+  },
+  "ThemeToggle": {
+    "aria": "Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "Language": {
+    "label": "Language",
+    "updating": "…",
+    "ru": "Русский",
+    "en": "English",
+    "uk": "Українська"
+  }
+}

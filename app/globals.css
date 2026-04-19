@@ -1,0 +1,84 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --background: #f4f4f5;
+  --foreground: #18181b;
+  --muted: #e4e4e7;
+  --muted-foreground: #52525b;
+  --card: rgba(255, 255, 255, 0.94);
+  --border: rgba(24, 24, 27, 0.12);
+  --accent: #7c3aed;
+  --accent-soft: rgba(124, 58, 237, 0.12);
+  --accent-quote: rgba(124, 58, 237, 0.18);
+  --glow: rgba(124, 58, 237, 0.18);
+  --grid-line: rgba(0, 0, 0, 0.06);
+  --section: #ececf0;
+  --section-deep: #e4e4e8;
+  --contact-from: #ececf0;
+  --contact-to: #f4f4f5;
+  --input-bg: #ffffff;
+  --input-border: rgba(24, 24, 27, 0.14);
+  --pill-border: rgba(24, 24, 27, 0.12);
+  --pill-bg: rgba(0, 0, 0, 0.03);
+}
+
+.dark {
+  --background: #07070a;
+  --foreground: #f4f4f5;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --card: rgba(24, 24, 27, 0.72);
+  --border: rgba(255, 255, 255, 0.1);
+  --accent: #a855f7;
+  --accent-soft: rgba(168, 85, 247, 0.15);
+  --accent-quote: rgba(168, 85, 247, 0.15);
+  --glow: rgba(168, 85, 247, 0.35);
+  --grid-line: rgba(255, 255, 255, 0.04);
+  --section: rgba(9, 9, 11, 0.45);
+  --section-deep: rgba(9, 9, 11, 0.6);
+  --contact-from: #18181b;
+  --contact-to: #050508;
+  --input-bg: rgba(0, 0, 0, 0.4);
+  --input-border: rgba(255, 255, 255, 0.1);
+  --pill-border: rgba(255, 255, 255, 0.1);
+  --pill-bg: rgba(255, 255, 255, 0.04);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-card: var(--card);
+  --color-border: var(--border);
+}
+
+/*
+  Type scale (Robot Dreams–style reference):
+  - Hero title: ~64–72px / 4–4.5rem, extra-bold display sans
+  - Body: 16–18px, line-height ~1.5
+  - Nav: ~14px, uppercase, semibold
+  - Meta pills: 12–13px
+  - Primary CTA: ~16px, medium
+*/
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans-body), system-ui, sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.font-display {
+  font-family: var(--font-display), var(--font-sans-body), system-ui, sans-serif;
+}
+
+.bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
