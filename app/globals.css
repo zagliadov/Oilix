@@ -9,10 +9,11 @@
   --muted-foreground: #52525b;
   --card: rgba(255, 255, 255, 0.94);
   --border: rgba(24, 24, 27, 0.12);
-  --accent: #7c3aed;
-  --accent-soft: rgba(124, 58, 237, 0.12);
-  --accent-quote: rgba(124, 58, 237, 0.18);
-  --glow: rgba(124, 58, 237, 0.18);
+  /* Accent preset 5: slate / steel — very restrained, cool corporate */
+  --accent: #475569;
+  --accent-soft: rgba(71, 85, 105, 0.12);
+  --accent-quote: rgba(71, 85, 105, 0.16);
+  --glow: rgba(71, 85, 105, 0.1);
   --grid-line: rgba(0, 0, 0, 0.06);
   --section: #ececf0;
   --section-deep: #e4e4e8;
@@ -31,10 +32,10 @@
   --muted-foreground: #a1a1aa;
   --card: rgba(24, 24, 27, 0.72);
   --border: rgba(255, 255, 255, 0.1);
-  --accent: #a855f7;
-  --accent-soft: rgba(168, 85, 247, 0.15);
-  --accent-quote: rgba(168, 85, 247, 0.15);
-  --glow: rgba(168, 85, 247, 0.35);
+  --accent: #94a3b8;
+  --accent-soft: rgba(148, 163, 184, 0.12);
+  --accent-quote: rgba(148, 163, 184, 0.12);
+  --glow: rgba(148, 163, 184, 0.18);
   --grid-line: rgba(255, 255, 255, 0.04);
   --section: rgba(9, 9, 11, 0.45);
   --section-deep: rgba(9, 9, 11, 0.6);
@@ -53,6 +54,8 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-card: var(--card);
   --color-border: var(--border);
+  /* Named `brand` — Tailwind reserves `accent-*` for form `accent-color`, not theme colors */
+  --color-brand: var(--accent);
 }
 
 /*

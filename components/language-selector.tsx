@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { Check, ChevronDown } from "lucide-react";
 import * as _ from "lodash";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -74,7 +75,7 @@ export const LanguageSelector = () => {
     <div className="relative" ref={containerReference}>
       <button
         type="button"
-        className="flex h-9 shrink-0 items-center gap-2 rounded-full bg-zinc-200/90 px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-200 dark:bg-zinc-700/90 dark:text-zinc-100 dark:hover:bg-zinc-600"
+        className="flex h-9 shrink-0 items-center gap-2 rounded-md bg-zinc-200/90 px-4 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-200 dark:bg-zinc-700/90 dark:text-zinc-100 dark:hover:bg-zinc-600"
         aria-expanded={menuOpen}
         aria-haspopup="listbox"
         aria-label={`${languageTranslations("label")}: ${localeLabels[activeLocale]}`}
@@ -101,7 +102,11 @@ export const LanguageSelector = () => {
           animate={{ rotate: menuOpen ? 180 : 0 }}
           transition={{ duration: 0.2 }}
         >
-          <ChevronDownIcon className="h-2.5 w-2.5 shrink-0 text-zinc-600 dark:text-zinc-300" />
+          <ChevronDown
+            className="h-2.5 w-2.5 shrink-0 text-zinc-600 dark:text-zinc-300"
+            strokeWidth={2.5}
+            aria-hidden
+          />
         </motion.span>
       </button>
       <AnimatePresence>
@@ -109,7 +114,7 @@ export const LanguageSelector = () => {
           <motion.div
             key="language-menu"
             role="listbox"
-            className="absolute right-0 z-[60] mt-2 min-w-[5.5rem] overflow-hidden rounded-xl border border-border bg-card py-1 shadow-lg backdrop-blur-md dark:bg-zinc-900/95"
+            className="absolute right-0 z-[60] mt-2 min-w-[5.5rem] overflow-hidden rounded-md border border-border bg-card py-1 shadow-lg backdrop-blur-md dark:bg-zinc-900/95"
             initial={{ opacity: 0, y: -6, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
@@ -136,7 +141,11 @@ export const LanguageSelector = () => {
               >
                 <span>{localeShortCode[localeOption]}</span>
                 {activeLocale === localeOption ? (
-                  <span className="text-zinc-500 dark:text-zinc-400">✓</span>
+                  <Check
+                    className="h-4 w-4 shrink-0 text-zinc-500 dark:text-zinc-400"
+                    strokeWidth={2}
+                    aria-hidden
+                  />
                 ) : null}
               </motion.button>
             ))}
@@ -146,16 +155,3 @@ export const LanguageSelector = () => {
     </div>
   );
 };
-
-const ChevronDownIcon = ({ className }: { className?: string }) => (
-  <svg
-    className={className}
-    width="10"
-    height="10"
-    viewBox="0 0 10 10"
-    aria-hidden
-    fill="currentColor"
-  >
-    <path d="M5 6.5L1 2.5h8L5 6.5z" />
-  </svg>
-);

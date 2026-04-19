@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { getTranslations } from "next-intl/server";
 
 import { SectionShell } from "@/app/components/landing/section-shell";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import {
   isStringArray,
   requireLandingMessage,
@@ -16,7 +17,8 @@ export const LandingAudience = async () => {
   );
 
   return (
-    <section
+    <ScrollReveal
+      as="section"
       id="audience"
       className="w-full border-t border-border bg-[var(--section)] py-20"
     >
@@ -28,17 +30,19 @@ export const LandingAudience = async () => {
           {landingTranslations("audience.lead")}
         </p>
         <ul className="mt-10 grid w-full gap-4 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4">
-          {_.map(audiencePoints, (point) => (
-            <li
+          {_.map(audiencePoints, (point, pointIndex) => (
+            <ScrollReveal
               key={point}
-              className="rounded-2xl border border-border bg-card p-5 text-base leading-[1.5] text-foreground/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] dark:text-zinc-300"
+              as="li"
+              delay={pointIndex * 0.05}
+              className="rounded-md border border-border bg-card p-5 text-base leading-[1.5] text-foreground/90 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] dark:text-zinc-300"
             >
-              <span className="mr-2 text-violet-600 dark:text-violet-400">—</span>
+              <span className="mr-2 text-brand">—</span>
               {point}
-            </li>
+            </ScrollReveal>
           ))}
         </ul>
       </SectionShell>
-    </section>
+    </ScrollReveal>
   );
 };

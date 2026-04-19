@@ -5,6 +5,10 @@
   },
   "Landing": {
     "nav": {
+      "delivery": "Delivery",
+      "publicOffer": "Public offer",
+      "returns": "Returns & exchange",
+      "cart": "Cart",
       "audience": "For you",
       "catalog": "Catalog",
       "quality": "Quality",
@@ -12,7 +16,11 @@
     },
     "brand": "Oilix",
     "header": {
-      "orderCta": "Order"
+      "orderCta": "Order",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu",
+      "menuTitle": "Navigation",
+      "menuTagline": "Oils · filters · expert fit"
     },
     "hero": {
       "pills": [
@@ -95,6 +103,14 @@
         }
       ]
     },
+    "products": {
+      "title": "Product catalog",
+      "lead": "20 demo items — images are placeholders until real photos are connected.",
+      "noImage": "No product image",
+      "volumeUnit": "L",
+      "currency": "₴",
+      "viewProduct": "View product details"
+    },
     "contact": {
       "title": "Order or ask about selection",
       "lead": "Tell us your make, model and year — or what you are already looking at in the catalog. We will reply with options and delivery timing. You can later wire the form to email, messenger or CRM.",
@@ -110,8 +126,104 @@
       "phone": "+380 ..."
     },
     "footer": {
-      "copyright": "© {year} Oilix. A store for private customers."
+      "copyright": "© {year} Oilix. A store for private customers.",
+      "delivery": "Delivery",
+      "publicOffer": "Public offer",
+      "returns": "Returns & exchange",
+      "cart": "Cart"
     }
+  },
+  "Delivery": {
+    "metaTitle": "Delivery — Oilix",
+    "metaDescription": "Shipping with Nova Poshta and Ukrposhta across Ukraine. Branches, parcel lockers and convenient pickup.",
+    "title": "Delivery across Ukraine",
+    "lead": "We ship orders via Nova Poshta and Ukrposhta. Choose a convenient pickup option — or tell us your preference and we will suggest the best fit.",
+    "novaTitle": "Nova Poshta",
+    "novaLead": "Popular for cities and towns with branches and parcel lockers.",
+    "novaPoints": [
+      "Branches and parcel lockers nationwide",
+      "Tracking in the Nova Poshta app and on the website",
+      "Courier delivery where the service is available",
+      "Cash on delivery or prepayment — agreed per order"
+    ],
+    "ukrposhtaTitle": "Ukrposhta",
+    "ukrposhtaLead": "Delivery via Ukrposhta: branches in cities and villages, standard operator rates apply.",
+    "ukrposhtaPoints": [
+      "Ukrposhta branches across the country",
+      "Domestic shipments under Ukrposhta rules",
+      "Timeframes and cost confirmed when you place an order",
+      "Pickup at a branch or an agreed delivery option"
+    ],
+    "note": "Exact timelines, rates and weight/size limits are confirmed when you place your order.",
+    "backHome": "Back to home",
+    "ctaOrder": "Order with delivery"
+  },
+  "PublicOffer": {
+    "metaTitle": "Public offer — Oilix",
+    "metaDescription": "Public offer of the Oilix online store: terms of sale, delivery, payment, warranty and returns.",
+    "title": "Public offer (contract)",
+    "subtitle": "Retail sale agreement via the Oilix website. Seller details and contacts are published on the Website.",
+    "backHome": "Back to home"
+  },
+  "Returns": {
+    "metaTitle": "Returns & exchange — Oilix",
+    "metaDescription": "Oilix returns and exchange: 14-day rule, required documents, rules for Nova Poshta orders. Link to the Law of Ukraine on consumer protection.",
+    "title": "Returns & exchange",
+    "subtitle": "Exchange / return of goods",
+    "introTitle": "Before you contact us",
+    "introSteps": [
+      "Make sure no more than 14 days have passed since the date of purchase.",
+      "Prepare all required documents.",
+      "Contact Oilix using the details on the Website or those provided when you placed your order."
+    ],
+    "documentsTitle": "Required documents",
+    "documents": [
+      "Proof of purchase (cash receipt or sales invoice).",
+      "Proof of identity."
+    ],
+    "rulesTitle": "Exchange and return rules",
+    "rulesLead": "At Oilix, an exchange is possible if:",
+    "rulesBullets": [
+      "you have a cash receipt (sales invoice) for the purchase;",
+      "the product and its packaging retain their merchantable condition: no mechanical damage, scratches or scuffs; for items in disposable (blister) packaging — the packaging must be unopened and undamaged;",
+      "the product shows no signs of use."
+    ],
+    "deliveryNote": "For exchange or return of goods delivered by Nova Poshta, use the contacts published on the Website or leave a request via the contact block on the home page.",
+    "lawTitle": "Legal framework",
+    "lawLead": "Consumer rights are governed by the laws of Ukraine, including:",
+    "lawLinkLabel": "Law of Ukraine “On Consumer Protection” of 12.05.1991 No. 1023-XII",
+    "backHome": "Back to home"
+  },
+  "Cart": {
+    "metaTitle": "Cart — Oilix",
+    "metaDescription": "Your Oilix cart: change quantities, review the total and place an order.",
+    "title": "Cart",
+    "lead": "Items are saved in your browser. Complete your order via the contact section on the home page.",
+    "backHome": "Back to home",
+    "ariaCart": "Shopping cart",
+    "addToCart": "Add to cart",
+    "addToCartShort": "Add to cart",
+    "decreaseQty": "Decrease quantity",
+    "increaseQty": "Increase quantity",
+    "inCartHint": "In the cart — adjust quantity or proceed to checkout.",
+    "empty": "Your cart is empty. Add items from the catalog.",
+    "goToCatalog": "Browse catalog",
+    "totalItems": "Total items",
+    "totalSum": "Total",
+    "removeLine": "Remove from cart",
+    "clearCart": "Clear cart",
+    "checkoutCta": "Place order"
+  },
+  "Product": {
+    "backToCatalog": "Back to catalog",
+    "lead": "Check the specs before ordering. Need advice — use the form below.",
+    "viscosity": "Viscosity",
+    "volume": "Volume",
+    "price": "Price",
+    "orderCta": "Order",
+    "metaTitle": "{brand} {name} — Oilix",
+    "metaDescription": "{brand} {name}, {viscosity}, {volumeLiters} L. Price {price} ₴.",
+    "notFoundTitle": "Product not found"
   },
   "ThemeToggle": {
     "aria": "Theme",

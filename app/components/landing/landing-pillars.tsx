@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { getTranslations } from "next-intl/server";
 
 import { SectionShell } from "@/app/components/landing/section-shell";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import {
   isPillarItemArray,
   requireLandingMessage,
@@ -25,10 +26,12 @@ export const LandingPillars = async () => {
           {landingTranslations("pillars.lead")}
         </p>
         <div className="mt-12 grid w-full gap-6 lg:grid-cols-3">
-          {_.map(pillarItems, (pillar) => (
-            <article
+          {_.map(pillarItems, (pillar, pillarIndex) => (
+            <ScrollReveal
               key={pillar.title}
-              className="flex flex-col rounded-2xl border border-border bg-gradient-to-b from-muted/70 to-transparent p-6 dark:from-white/[0.06]"
+              as="article"
+              delay={pillarIndex * 0.07}
+              className="flex flex-col rounded-md border border-border bg-gradient-to-b from-muted/70 to-transparent p-6 dark:from-white/[0.06]"
             >
               <h3 className="font-display text-lg font-semibold uppercase tracking-wide text-foreground">
                 {pillar.title}
@@ -36,7 +39,7 @@ export const LandingPillars = async () => {
               <p className="mt-3 flex-1 text-base leading-[1.5] text-muted-foreground">
                 {pillar.body}
               </p>
-            </article>
+            </ScrollReveal>
           ))}
         </div>
       </SectionShell>

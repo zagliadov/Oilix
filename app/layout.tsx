@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { CartProvider } from "@/components/cart/cart-context";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
@@ -42,7 +43,10 @@ export default async function RootLayout({
       className={`${inter.variable} ${oswald.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col bg-background text-foreground">
+      <body
+        className="flex min-h-full flex-col bg-background text-foreground"
+        suppressHydrationWarning
+      >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider
             attribute="class"
@@ -50,7 +54,7 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <CartProvider>{children}</CartProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
