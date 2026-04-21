@@ -4,7 +4,13 @@ import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useCart } from "@/components/cart/cart-context";
-import { getCatalogProductById } from "@/app/lib/mocks/catalog-products";
+import { getStoreProductById } from "@/app/lib/catalog";
+import {
+  storefrontButtonPrimary,
+  storefrontButtonPrimaryPadding,
+  storefrontButtonSecondary,
+  storefrontQuantityRailOnCard,
+} from "@/components/ui/storefront";
 
 type AddToCartButtonProps = {
   productId: string;
@@ -17,7 +23,7 @@ export const AddToCartButton = ({
 }: AddToCartButtonProps) => {
   const cartTranslations = useTranslations("Cart");
   const { lines, addProduct, setLineQuantity, isReady } = useCart();
-  const product = getCatalogProductById(productId);
+  const product = getStoreProductById(productId);
   const line = lines.find((entry) => entry.productId === productId);
   const quantity = line?.quantity ?? 0;
 
@@ -27,15 +33,15 @@ export const AddToCartButton = ({
 
   const baseClass =
     variant === "primary"
-      ? "inline-flex w-full items-center justify-center gap-2 rounded-md bg-brand px-7 py-3.5 text-base font-medium text-white transition hover:brightness-110 active:brightness-95 sm:w-auto"
-      : "inline-flex items-center justify-center gap-1.5 rounded-md border border-border bg-card px-3 py-2 text-sm font-medium text-foreground transition hover:border-brand/30 hover:bg-muted/40 dark:border-white/10 dark:bg-white/[0.03]";
+      ? `w-full gap-2 sm:w-auto ${storefrontButtonPrimary} ${storefrontButtonPrimaryPadding}`
+      : `${storefrontButtonSecondary} gap-1.5 bg-card px-3 py-2 text-sm hover:border-brand/30 hover:bg-muted/40 dark:bg-white/[0.03]`;
 
   if (!isReady) {
     return (
       <div
         className={
           variant === "primary"
-            ? "h-[3.25rem] w-full animate-pulse rounded-md bg-muted sm:w-48"
+            ? "h-13 w-full animate-pulse rounded-md bg-muted sm:w-48"
             : "h-9 w-24 animate-pulse rounded-md bg-muted"
         }
         aria-hidden
@@ -67,7 +73,7 @@ export const AddToCartButton = ({
       }
     >
       <div
-        className={`inline-flex items-center justify-center gap-0 overflow-hidden rounded-md border border-border bg-card dark:border-white/10 dark:bg-white/[0.03] ${variant === "primary" ? "sm:min-w-[11rem]" : ""}`}
+        className={`${storefrontQuantityRailOnCard} ${variant === "primary" ? "sm:min-w-44" : ""}`}
       >
         <button
           type="button"
@@ -79,7 +85,7 @@ export const AddToCartButton = ({
         >
           <Minus className="h-4 w-4" strokeWidth={2} aria-hidden />
         </button>
-        <span className="min-w-[2.5rem] text-center text-base font-semibold tabular-nums">
+        <span className="min-w-10 text-center text-base font-semibold tabular-nums">
           {quantity}
         </span>
         <button

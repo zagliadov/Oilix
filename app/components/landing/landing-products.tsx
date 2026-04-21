@@ -6,7 +6,8 @@ import { ProductCard } from "@/app/components/catalog/product-card";
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { StickyHeading } from "@/components/motion/sticky-heading";
-import { getPromoProducts } from "@/app/lib/mocks/catalog-products";
+import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
+import { getPromoProducts } from "@/app/lib/catalog";
 
 export const LandingProducts = async () => {
   const landingTranslations = await getTranslations("Landing");
@@ -14,10 +15,10 @@ export const LandingProducts = async () => {
 
   const labels = {
     noImage: landingTranslations("products.noImage"),
-    volumeUnit: landingTranslations("products.volumeUnit"),
     currency: landingTranslations("products.currency"),
     viewProduct: landingTranslations("products.viewProduct"),
     promoBadge: landingTranslations("products.promoBadge"),
+    ...buildProductCardSpecContextFromLanding((key) => landingTranslations(key)),
   };
 
   return (

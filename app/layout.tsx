@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { resolveMetadataBase } from "@/app/lib/seo/page-metadata";
 import { CartProvider } from "@/components/cart/cart-context";
 import { ThemeProvider } from "@/components/theme-provider";
 
@@ -20,12 +21,40 @@ const oswald = Oswald({
   display: "swap",
 });
 
+const openGraphLocaleByAppLocale: Record<string, string> = {
+  en: "en_US",
+  uk: "uk_UA",
+  ru: "ru_RU",
+};
+
 export const generateMetadata = async (): Promise<Metadata> => {
   const metadataTranslations = await getTranslations("Metadata");
+  const locale = await getLocale();
+  const metadataBase = resolveMetadataBase();
 
   return {
-    title: metadataTranslations("title"),
+    ...(metadataBase !== undefined ? { metadataBase } : {}),
+    title: {
+      default: metadataTranslations("title"),
+      template: metadataTranslations("titleTemplate"),
+    },
     description: metadataTranslations("description"),
+    openGraph: {
+      type: "website",
+      siteName: metadataTranslations("siteName"),
+      title: metadataTranslations("title"),
+      description: metadataTranslations("description"),
+      locale: openGraphLocaleByAppLocale[locale] ?? locale,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: metadataTranslations("title"),
+      description: metadataTranslations("description"),
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 };
 

@@ -5,6 +5,11 @@ import { SectionShell } from "@/app/components/landing/section-shell";
 import { NavHashLink } from "@/components/nav-hash-link";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import {
+  storefrontButtonPrimary,
+  storefrontButtonPrimaryPadding,
+  storefrontButtonSecondarySoft,
+} from "@/components/ui/storefront";
+import {
   isStringArray,
   requireLandingMessage,
 } from "@/app/lib/i18n/message-guards";
@@ -39,13 +44,13 @@ export const LandingHero = async () => {
         <div className="mt-10 flex flex-wrap gap-4">
           <NavHashLink
             hash="contact"
-            className="inline-flex items-center justify-center rounded-md bg-brand px-7 py-3.5 text-base font-medium text-white shadow-[0_0_40px_-8px_var(--glow)] transition hover:brightness-110 active:brightness-95"
+            className={`${storefrontButtonPrimary} ${storefrontButtonPrimaryPadding} shadow-[0_0_40px_-8px_var(--glow)]`}
           >
             {landingTranslations("hero.ctaPrimary")}
           </NavHashLink>
           <NavHashLink
             hash="promo"
-            className="inline-flex items-center justify-center rounded-md border border-border bg-muted/50 px-7 py-3.5 text-base font-medium text-foreground transition hover:bg-muted dark:border-white/15 dark:bg-white/[0.04] dark:hover:border-white/25 dark:hover:bg-white/[0.07]"
+            className={`${storefrontButtonSecondarySoft} ${storefrontButtonPrimaryPadding}`}
           >
             {landingTranslations("hero.ctaSecondary")}
           </NavHashLink>

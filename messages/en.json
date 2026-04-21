@@ -1,7 +1,10 @@
 {
   "Metadata": {
     "title": "Oilix — engine oils for your car",
-    "description": "Selection by make and engine, delivery to your door, genuine products and clear retail prices for private customers."
+    "description": "Selection by make and engine, delivery to your door, genuine products and clear retail prices for private customers.",
+    "titleTemplate": "%s | Oilix",
+    "siteName": "Oilix",
+    "pageTitle": "{segment} | Oilix"
   },
   "Landing": {
     "nav": {
@@ -106,7 +109,7 @@
     },
     "products": {
       "title": "Product catalog",
-      "lead": "20 demo items — images are placeholders until real photos are connected.",
+      "lead": "Demo catalog (motor oils, filters, fluids, spark plugs) — images are placeholders until real photos are connected.",
       "promoTitle": "Promotional items",
       "promoLead": "Products with promoDiscountPercent in data/catalog.json — same order as in the products array.",
       "viewFullCatalog": "Full catalog",
@@ -114,7 +117,14 @@
       "noImage": "No product image",
       "volumeUnit": "L",
       "currency": "₴",
-      "viewProduct": "View product details"
+      "viewProduct": "View product details",
+      "freezePointUnit": "°C",
+      "filterRole": {
+        "oil": "Oil filter",
+        "air": "Air filter",
+        "cabin": "Cabin filter",
+        "fuel": "Fuel filter"
+      }
     },
     "contact": {
       "title": "Order or ask about selection",
@@ -140,15 +150,42 @@
     }
   },
   "Catalog": {
-    "metaTitle": "Catalog — Oilix",
-    "metaDescription": "All engine oils and products: brand, viscosity, volume, price.",
+    "metaTitle": "Catalog",
+    "metaDescription": "Shop oils, filters, fluids and spark plugs with filters by brand and price. Clear specs and retail prices — Oilix online store.",
     "title": "Product catalog",
-    "lead": "Full list from data/catalog.json. Images are placeholders until photos are connected.",
-    "backHome": "Back to home"
+    "lead": "Full list from data/catalog.json (brands, categories, products). Images are placeholders until photos are connected.",
+    "backHome": "Back to home",
+    "explorer": {
+      "searchPlaceholder": "Name or article…",
+      "searchAria": "Search by product name or article",
+      "sortLabel": "Sort",
+      "sort": {
+        "price_asc": "Price: low to high",
+        "price_desc": "Price: high to low",
+        "name_asc": "Name: A to Z",
+        "name_desc": "Name: Z to A",
+        "brand_asc": "Brand: A to Z"
+      },
+      "filtersHeading": "Filters",
+      "categoryHeading": "Category",
+      "brandHeading": "Brand",
+      "stockLabel": "Availability",
+      "stock": {
+        "all": "All",
+        "in_stock": "In stock",
+        "out_of_stock": "Out of stock"
+      },
+      "priceMin": "Min price (₴)",
+      "priceMax": "Max price (₴)",
+      "priceHint": "Catalog range: {min}–{max} ₴ (effective price with discounts).",
+      "reset": "Reset filters",
+      "results": "Showing {count} of {total}",
+      "noResults": "No products match. Try adjusting search or filters."
+    }
   },
   "Delivery": {
-    "metaTitle": "Delivery — Oilix",
-    "metaDescription": "Shipping with Nova Poshta and Ukrposhta across Ukraine. Branches, parcel lockers and convenient pickup.",
+    "metaTitle": "Delivery",
+    "metaDescription": "How we ship your order: Nova Poshta and Ukrposhta across Ukraine, branches, parcel lockers and pickup options — Oilix.",
     "title": "Delivery across Ukraine",
     "lead": "We ship orders via Nova Poshta and Ukrposhta. Choose a convenient pickup option — or tell us your preference and we will suggest the best fit.",
     "novaTitle": "Nova Poshta",
@@ -172,15 +209,15 @@
     "ctaOrder": "Order with delivery"
   },
   "PublicOffer": {
-    "metaTitle": "Public offer — Oilix",
-    "metaDescription": "Public offer of the Oilix online store: terms of sale, delivery, payment, warranty and returns.",
+    "metaTitle": "Public offer",
+    "metaDescription": "Terms of sale for the Oilix store: ordering, delivery, payment, warranty and returns in one place.",
     "title": "Public offer (contract)",
     "subtitle": "Retail sale agreement via the Oilix website. Seller details and contacts are published on the Website.",
     "backHome": "Back to home"
   },
   "Returns": {
-    "metaTitle": "Returns & exchange — Oilix",
-    "metaDescription": "Oilix returns and exchange: 14-day rule, required documents, rules for Nova Poshta orders. Link to the Law of Ukraine on consumer protection.",
+    "metaTitle": "Returns & exchange",
+    "metaDescription": "How to return or exchange an order: 14-day rule, what to prepare, Nova Poshta notes — Oilix. Link to Ukraine consumer protection law.",
     "title": "Returns & exchange",
     "subtitle": "Exchange / return of goods",
     "introTitle": "Before you contact us",
@@ -208,8 +245,8 @@
     "backHome": "Back to home"
   },
   "Cart": {
-    "metaTitle": "Cart — Oilix",
-    "metaDescription": "Your Oilix cart: change quantities, review the total and place an order.",
+    "metaTitle": "Cart",
+    "metaDescription": "Review your items, adjust quantities and go to checkout — your Oilix shopping cart.",
     "title": "Cart",
     "lead": "Items are saved in your browser. Complete your order via the contact section on the home page.",
     "backHome": "Back to home",
@@ -219,24 +256,99 @@
     "decreaseQty": "Decrease quantity",
     "increaseQty": "Increase quantity",
     "inCartHint": "In the cart — adjust quantity or proceed to checkout.",
-    "empty": "Your cart is empty. Add items from the catalog.",
+    "emptyTitle": "Your cart is empty",
+    "empty": "Add products from the catalog, then proceed to checkout.",
+    "emptyHint": "Your selection is stored only in this browser. Shipping and payment are confirmed after you submit a request.",
     "goToCatalog": "Browse catalog",
+    "continueShopping": "Continue shopping",
+    "summaryTitle": "Order summary",
+    "positionsSummary": "{lines} line(s) · {units} units",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "summaryNote": "Excludes delivery. We confirm details via the contact section on the home page.",
+    "unitPrice": "Unit price",
+    "lineSubtotal": "Line total",
     "totalItems": "Total items",
     "totalSum": "Total",
     "removeLine": "Remove from cart",
     "clearCart": "Clear cart",
     "checkoutCta": "Place order"
   },
+  "Checkout": {
+    "metaTitle": "Checkout",
+    "metaDescription": "Complete your order: contacts, delivery and payment. Secure checkout flow at Oilix (demo — server submit not wired yet).",
+    "title": "Checkout",
+    "lead": "Fill in the form — we will contact you to confirm. Demo mode does not persist orders on the server.",
+    "backToCart": "Back to cart",
+    "backHome": "Back to home",
+    "backToCatalog": "Browse catalog",
+    "formSectionTitle": "Contact & delivery",
+    "fieldName": "Full name",
+    "fieldPhone": "Phone",
+    "fieldEmail": "Email",
+    "fieldCity": "City",
+    "fieldDelivery": "Delivery method",
+    "fieldPayment": "Payment method",
+    "fieldComment": "Order comment",
+    "fieldCommentHint": "Optional: branch address, preferred call time, etc.",
+    "selectPlaceholder": "Select…",
+    "submit": "Confirm order",
+    "summaryTitle": "Your order",
+    "subtotal": "Items",
+    "total": "Total",
+    "editCart": "Edit cart",
+    "successTitle": "Request received",
+    "successLead": "We will contact you shortly to confirm the details.",
+    "delivery": {
+      "nova_poshta": "Nova Poshta",
+      "ukrposhta": "Ukrposhta",
+      "pickup": "Pickup"
+    },
+    "payment": {
+      "cash": "Cash on delivery",
+      "card_on_delivery": "Card on delivery",
+      "bank_transfer": "Bank transfer"
+    },
+    "validation": {
+      "nameMin": "Enter your name (at least 2 characters).",
+      "phoneInvalid": "Enter a valid phone number (at least 9 digits).",
+      "emailInvalid": "Enter a valid email address.",
+      "cityMin": "Enter a city (at least 2 characters).",
+      "required": "This field is required.",
+      "commentMax": "Maximum 2000 characters."
+    }
+  },
   "Product": {
+    "breadcrumbCatalog": "Catalog",
+    "brand": "Brand",
+    "article": "Article",
+    "stockLabel": "Availability",
+    "stockInStock": "In stock",
+    "stockOutOfStock": "Out of stock",
+    "descriptionHeading": "Description",
+    "specsHeading": "Specifications",
+    "relatedTitle": "You may also like",
+    "crossSellTitle": "Goes well with",
+    "saveAmount": "You save",
     "backToCatalog": "Back to catalog",
     "lead": "Check the specs before ordering. Need advice — use the form below.",
     "viscosity": "Viscosity",
     "volume": "Volume",
     "price": "Price",
     "orderCta": "Order",
-    "metaTitle": "{brand} {name} — Oilix",
-    "metaDescription": "{brand} {name}, {viscosity}, {volumeLiters} L. Price {price} ₴.",
-    "notFoundTitle": "Product not found"
+    "metaTitle": "{brand} · {name} | Oilix",
+    "metaDescription": "{brand} {name} — {summary}. From {price} ₴ · buy online at Oilix. Delivery across Ukraine.",
+    "notFoundTitle": "Product not found",
+    "notFoundMetaDescription": "This product is not in the Oilix catalog. Open the catalog to find oils, filters and fluids.",
+    "filterType": "Filter type",
+    "partNumber": "Part number",
+    "freezePoint": "Protection down to",
+    "specification": "Specification",
+    "dotRating": "DOT class",
+    "thread": "Thread",
+    "electrode": "Electrode",
+    "heatRange": "Heat range",
+    "details": "Details"
   },
   "ThemeToggle": {
     "aria": "Theme",

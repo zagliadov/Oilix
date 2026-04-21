@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
@@ -9,13 +10,8 @@ import { SectionShell } from "@/app/components/landing/section-shell";
 import { CartPageClient } from "@/components/cart/cart-page-client";
 import { LanguageTransition } from "@/components/language-transition";
 
-export const generateMetadata = async () => {
-  const cartTranslations = await getTranslations("Cart");
-  return {
-    title: cartTranslations("metaTitle"),
-    description: cartTranslations("metaDescription"),
-  };
-};
+export const generateMetadata = async () =>
+  buildStorefrontSectionMetadata("Cart", "/cart");
 
 export default async function CartPage() {
   const cartTranslations = await getTranslations("Cart");

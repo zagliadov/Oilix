@@ -1,3 +1,6 @@
+import { getTranslations } from "next-intl/server";
+
+import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
 import { LandingAudience } from "@/app/components/landing/landing-audience";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingCatalog } from "@/app/components/landing/landing-catalog";
@@ -10,6 +13,15 @@ import { LandingPillars } from "@/app/components/landing/landing-pillars";
 import { LandingQuality } from "@/app/components/landing/landing-quality";
 import { HashScroll } from "@/components/hash-scroll";
 import { LanguageTransition } from "@/components/language-transition";
+
+export const generateMetadata = async () => {
+  const metadataTranslations = await getTranslations("Metadata");
+  return buildAbsoluteRouteMetadata({
+    pageTitle: metadataTranslations("title"),
+    description: metadataTranslations("description"),
+    path: "/",
+  });
+};
 
 export default function Home() {
   return (

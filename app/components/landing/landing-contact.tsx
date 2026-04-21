@@ -2,6 +2,12 @@ import { getTranslations } from "next-intl/server";
 
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
+import {
+  storefrontButtonPrimary,
+  storefrontButtonPrimaryPaddingCompact,
+  storefrontMarketingInput,
+  storefrontSurfaceCard,
+} from "@/components/ui/storefront";
 
 export const LandingContact = async () => {
   const landingTranslations = await getTranslations("Landing");
@@ -23,7 +29,7 @@ export const LandingContact = async () => {
             </p>
           </div>
           <form
-            className="flex w-full flex-col gap-4 rounded-md border border-border bg-card p-6 sm:p-8"
+            className={`flex w-full flex-col gap-4 p-6 sm:p-8 ${storefrontSurfaceCard}`}
             action="#"
             method="post"
           >
@@ -35,7 +41,7 @@ export const LandingContact = async () => {
                 name="name"
                 type="text"
                 autoComplete="name"
-                className="w-full rounded-md border border-[var(--input-border)] bg-[var(--input-bg)] px-4 py-3 text-base text-foreground outline-none ring-brand/30 placeholder:text-muted-foreground focus:ring-2 focus:ring-brand/40"
+                className={storefrontMarketingInput}
                 placeholder={landingTranslations("placeholders.name")}
               />
             </label>
@@ -47,7 +53,7 @@ export const LandingContact = async () => {
                 name="email"
                 type="email"
                 autoComplete="email"
-                className="w-full rounded-md border border-[var(--input-border)] bg-[var(--input-bg)] px-4 py-3 text-base text-foreground outline-none ring-brand/30 placeholder:text-muted-foreground focus:ring-2 focus:ring-brand/40"
+                className={storefrontMarketingInput}
                 placeholder={landingTranslations("placeholders.email")}
               />
             </label>
@@ -59,7 +65,7 @@ export const LandingContact = async () => {
                 name="phone"
                 type="tel"
                 autoComplete="tel"
-                className="w-full rounded-md border border-[var(--input-border)] bg-[var(--input-bg)] px-4 py-3 text-base text-foreground outline-none ring-brand/30 placeholder:text-muted-foreground focus:ring-2 focus:ring-brand/40"
+                className={storefrontMarketingInput}
                 placeholder={landingTranslations("placeholders.phone")}
               />
             </label>
@@ -68,7 +74,7 @@ export const LandingContact = async () => {
             </p>
             <button
               type="submit"
-              className="mt-2 rounded-md bg-brand py-3.5 text-base font-medium text-white transition hover:brightness-110 active:brightness-95"
+              className={`mt-2 w-full ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
             >
               {landingTranslations("contact.submit")}
             </button>

@@ -1,0 +1,104 @@
+import type { Metadata } from "next";
+
+/**
+ * Optional absolute site URL for canonical URLs & Open Graph (`https://example.com`).
+ * Set `NEXT_PUBLIC_SITE_URL` in deployment; metadata still works without it.
+ */
+export const resolveMetadataBase = (): Metadata["metadataBase"] => {
+  const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+  if (raw === undefined || raw === "") {
+    return undefined;
+  }
+  const normalized = raw.endsWith("/") ? raw.slice(0, -1) : raw;
+  try {
+    return new URL(`${normalized}/`);
+  } catch {
+    return undefined;
+  }
+};
+
+const toCanonicalUrl = (
+  metadataBase: Metadata["metadataBase"],
+  path: string,
+): string | undefined => {
+  if (metadataBase === undefined || metadataBase === null) {
+    return undefined;
+  }
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  try {
+    return new URL(normalizedPath, metadataBase).toString();
+  } catch {
+    return undefined;
+  }
+};
+
+const socialMetadata = (input: {
+  pageTitle: string;
+  description: string;
+  canonicalUrl: string | undefined;
+}): Pick<Metadata, "openGraph" | "twitter"> => ({
+  openGraph: {
+    title: input.pageTitle,
+    description: input.description,
+    ...(input.canonicalUrl !== undefined ? { url: input.canonicalUrl } : {}),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: input.pageTitle,
+    description: input.description,
+  },
+});
+
+export type SegmentRouteMetadataInput = {
+  /** Short segment filled into the root `title.template` (e.g. "Cart"). */
+  segmentTitle: string;
+  /** Full title for Open Graph / Twitter (e.g. "Cart | Oilix"). */
+  pageTitle: string;
+  description: string;
+  path: string;
+};
+
+/**
+ * Public route that uses the root layout title template for the browser tab.
+ */
+export const buildSegmentRouteMetadata = ({
+  segmentTitle,
+  pageTitle,
+  description,
+  path,
+}: SegmentRouteMetadataInput): Metadata => {
+  const metadataBase = resolveMetadataBase();
+  const canonicalUrl = toCanonicalUrl(metadataBase, path);
+
+  return {
+    title: segmentTitle,
+    description,
+    ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
+    ...socialMetadata({ pageTitle, description, canonicalUrl }),
+  };
+};
+
+export type AbsoluteRouteMetadataInput = {
+  pageTitle: string;
+  description: string;
+  path: string;
+};
+
+/**
+ * Routes that need a full custom title (home, product PDP, error-ish titles).
+ */
+export const buildAbsoluteRouteMetadata = ({
+  pageTitle,
+  description,
+  path,
+}: AbsoluteRouteMetadataInput): Metadata => {
+  const metadataBase = resolveMetadataBase();
+  const canonicalUrl = toCanonicalUrl(metadataBase, path);
+
+  return {
+    title: { absolute: pageTitle },
+    description,
+    ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
+    ...socialMetadata({ pageTitle, description, canonicalUrl }),
+  };
+};

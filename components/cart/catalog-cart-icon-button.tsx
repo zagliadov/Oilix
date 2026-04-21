@@ -4,6 +4,7 @@ import { ShoppingCart } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import { useCart } from "@/components/cart/cart-context";
+import { storefrontIconButton } from "@/components/ui/storefront";
 
 type CatalogCartIconButtonProps = {
   productId: string;
@@ -25,7 +26,7 @@ export const CatalogCartIconButton = ({
         addProduct(productId, 1);
       }}
       disabled={!isReady}
-      className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border bg-background text-foreground transition hover:border-brand/40 hover:bg-brand/10 disabled:opacity-50 dark:border-white/12 dark:bg-zinc-950/80"
+      className={storefrontIconButton}
       aria-label={cartTranslations("addToCartShort")}
     >
       <ShoppingCart className="h-[1.125rem] w-[1.125rem]" strokeWidth={2} aria-hidden />

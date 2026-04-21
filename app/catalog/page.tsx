@@ -1,35 +1,28 @@
-import * as _ from "lodash";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
-import { ProductCard } from "@/app/components/catalog/product-card";
+import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
+import { CatalogExplorer } from "@/app/components/catalog/catalog-explorer";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
 import { SectionShell } from "@/app/components/landing/section-shell";
-import { catalogProducts } from "@/app/lib/mocks/catalog-products";
+import {
+  catalogIndexes,
+  computeEffectivePriceBounds,
+  storeProducts,
+} from "@/app/lib/catalog";
 import { LanguageTransition } from "@/components/language-transition";
 
-export const generateMetadata = async () => {
-  const catalogTranslations = await getTranslations("Catalog");
-  return {
-    title: catalogTranslations("metaTitle"),
-    description: catalogTranslations("metaDescription"),
-  };
-};
+export const generateMetadata = async () =>
+  buildStorefrontSectionMetadata("Catalog", "/catalog");
 
 export default async function CatalogPage() {
   const catalogTranslations = await getTranslations("Catalog");
-  const landingTranslations = await getTranslations("Landing");
 
-  const labels = {
-    noImage: landingTranslations("products.noImage"),
-    volumeUnit: landingTranslations("products.volumeUnit"),
-    currency: landingTranslations("products.currency"),
-    viewProduct: landingTranslations("products.viewProduct"),
-    promoBadge: landingTranslations("products.promoBadge"),
-  };
+  const { brands, categories } = catalogIndexes.bundle;
+  const priceBounds = computeEffectivePriceBounds(storeProducts);
 
   return (
     <div className="relative flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
@@ -58,13 +51,12 @@ export default async function CatalogPage() {
                 </p>
               </header>
 
-              <ul className="mt-12 grid w-full list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {_.map(catalogProducts, (product) => (
-                  <li key={product.id}>
-                    <ProductCard product={product} labels={labels} />
-                  </li>
-                ))}
-              </ul>
+              <CatalogExplorer
+                products={storeProducts}
+                brands={brands}
+                categories={categories}
+                priceBounds={priceBounds}
+              />
             </div>
           </SectionShell>
         </main>

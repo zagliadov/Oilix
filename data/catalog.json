@@ -1,170 +1,442 @@
 {
+  "brands": [
+    {
+      "id": "castrol",
+      "slug": "castrol",
+      "name": "Castrol"
+    },
+    {
+      "id": "mobil",
+      "slug": "mobil",
+      "name": "Mobil"
+    },
+    {
+      "id": "shell",
+      "slug": "shell",
+      "name": "Shell"
+    },
+    {
+      "id": "liqui-moly",
+      "slug": "liqui-moly",
+      "name": "Liqui Moly"
+    },
+    {
+      "id": "motul",
+      "slug": "motul",
+      "name": "Motul"
+    },
+    {
+      "id": "totalenergies",
+      "slug": "totalenergies",
+      "name": "TotalEnergies"
+    },
+    {
+      "id": "valvoline",
+      "slug": "valvoline",
+      "name": "Valvoline"
+    },
+    {
+      "id": "petronas",
+      "slug": "petronas",
+      "name": "Petronas"
+    },
+    {
+      "id": "elf",
+      "slug": "elf",
+      "name": "Elf"
+    },
+    {
+      "id": "mannol",
+      "slug": "mannol",
+      "name": "Mannol"
+    },
+    {
+      "id": "mann-filter",
+      "slug": "mann-filter",
+      "name": "Mann-Filter"
+    },
+    {
+      "id": "bosch",
+      "slug": "bosch",
+      "name": "Bosch"
+    },
+    {
+      "id": "ngk",
+      "slug": "ngk",
+      "name": "NGK"
+    }
+  ],
+  "categories": [
+    {
+      "id": "motor-oils",
+      "slug": "motor-oils",
+      "name": "Motor oils",
+      "primaryKind": "motor_oil"
+    },
+    {
+      "id": "filters",
+      "slug": "filters",
+      "name": "Filters",
+      "primaryKind": "filter"
+    },
+    {
+      "id": "antifreeze",
+      "slug": "antifreeze",
+      "name": "Antifreeze & coolant",
+      "primaryKind": "antifreeze"
+    },
+    {
+      "id": "brake-fluids",
+      "slug": "brake-fluids",
+      "name": "Brake fluids",
+      "primaryKind": "brake_fluid"
+    },
+    {
+      "id": "spark-plugs",
+      "slug": "spark-plugs",
+      "name": "Spark plugs",
+      "primaryKind": "spark_plug"
+    },
+    {
+      "id": "consumables",
+      "slug": "consumables",
+      "name": "Other consumables",
+      "primaryKind": "other_consumable"
+    }
+  ],
   "products": [
     {
       "id": "1",
-      "brand": "Castrol",
+      "brandId": "castrol",
+      "categoryId": "motor-oils",
       "name": "EDGE Titanium FST",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 1299
+      "priceUah": 1299,
+      "inStock": true,
+      "article": "OI-01",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "2",
-      "brand": "Mobil",
+      "brandId": "mobil",
+      "categoryId": "motor-oils",
       "name": "1 ESP x2",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 5,
-      "priceUah": 2199
+      "priceUah": 2199,
+      "inStock": true,
+      "article": "OI-02",
+      "description": "Синтетична моторна олива 5W-30, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "3",
-      "brand": "Shell",
+      "brandId": "shell",
+      "categoryId": "motor-oils",
       "name": "Helix Ultra ECT",
+      "kind": "motor_oil",
       "viscosity": "5W-40",
       "volumeLiters": 4,
-      "priceUah": 1549
+      "priceUah": 1549,
+      "inStock": false,
+      "article": "OI-03",
+      "description": "Синтетична моторна олива 5W-40, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "4",
-      "brand": "Liqui Moly",
+      "brandId": "liqui-moly",
+      "categoryId": "motor-oils",
       "name": "Top Tec 4200",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 5,
       "priceUah": 2399,
-      "promoDiscountPercent": 5
+      "promoDiscountPercent": 5,
+      "inStock": true,
+      "article": "OI-04",
+      "description": "Синтетична моторна олива 5W-30, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "5",
-      "brand": "Motul",
+      "brandId": "motul",
+      "categoryId": "motor-oils",
       "name": "8100 X-cess",
+      "kind": "motor_oil",
       "viscosity": "5W-40",
       "volumeLiters": 5,
-      "priceUah": 2699
+      "priceUah": 2699,
+      "inStock": true,
+      "article": "OI-05",
+      "description": "Синтетична моторна олива 5W-40, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "6",
-      "brand": "TotalEnergies",
+      "brandId": "totalenergies",
+      "categoryId": "motor-oils",
       "name": "Quartz Ineo MC3",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 1199
+      "priceUah": 1199,
+      "inStock": true,
+      "article": "OI-06",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "7",
-      "brand": "Valvoline",
+      "brandId": "valvoline",
+      "categoryId": "motor-oils",
       "name": "SynPower MST",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 1399
+      "priceUah": 1399,
+      "inStock": true,
+      "article": "OI-07",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "8",
-      "brand": "Petronas",
+      "brandId": "petronas",
+      "categoryId": "motor-oils",
       "name": "Syntium 7000 E",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 1349
+      "priceUah": 1349,
+      "inStock": false,
+      "article": "OI-08",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "9",
-      "brand": "Elf",
+      "brandId": "elf",
+      "categoryId": "motor-oils",
       "name": "Evolution Full-Tech FE",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 1099
+      "priceUah": 1099,
+      "inStock": true,
+      "article": "OI-09",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "10",
-      "brand": "Mannol",
+      "brandId": "mannol",
+      "categoryId": "motor-oils",
       "name": "Energy Combi LL",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 899
+      "priceUah": 899,
+      "inStock": true,
+      "article": "OI-10",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "11",
-      "brand": "Castrol",
+      "brandId": "castrol",
+      "categoryId": "motor-oils",
       "name": "Magnatec A5",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
-      "priceUah": 999
+      "priceUah": 999,
+      "inStock": true,
+      "article": "OI-11",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "12",
-      "brand": "Shell",
+      "brandId": "shell",
+      "categoryId": "motor-oils",
       "name": "Helix HX8 ECT",
+      "kind": "motor_oil",
       "viscosity": "5W-40",
       "volumeLiters": 4,
-      "priceUah": 949
+      "priceUah": 949,
+      "inStock": true,
+      "article": "OI-12",
+      "description": "Синтетична моторна олива 5W-40, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "13",
-      "brand": "Mobil",
+      "brandId": "mobil",
+      "categoryId": "motor-oils",
       "name": "Super 3000 X1",
+      "kind": "motor_oil",
       "viscosity": "5W-40",
       "volumeLiters": 4,
-      "priceUah": 849
+      "priceUah": 849,
+      "inStock": true,
+      "article": "OI-13",
+      "description": "Синтетична моторна олива 5W-40, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "14",
-      "brand": "Liqui Moly",
+      "brandId": "liqui-moly",
+      "categoryId": "motor-oils",
       "name": "Molygen New Generation",
+      "kind": "motor_oil",
       "viscosity": "5W-40",
       "volumeLiters": 5,
-      "priceUah": 1899
+      "priceUah": 1899,
+      "inStock": true,
+      "article": "OI-14",
+      "description": "Синтетична моторна олива 5W-40, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "15",
-      "brand": "Motul",
+      "brandId": "motul",
+      "categoryId": "motor-oils",
       "name": "8100 Eco-nergy",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 5,
-      "priceUah": 2299
+      "priceUah": 2299,
+      "inStock": false,
+      "article": "OI-15",
+      "description": "Синтетична моторна олива 5W-30, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "16",
-      "brand": "TotalEnergies",
+      "brandId": "totalenergies",
+      "categoryId": "motor-oils",
       "name": "Quartz 9000 Energy",
+      "kind": "motor_oil",
       "viscosity": "0W-30",
       "volumeLiters": 4,
       "priceUah": 1699,
-      "promoDiscountPercent": 15
+      "promoDiscountPercent": 15,
+      "inStock": true,
+      "article": "OI-16",
+      "description": "Синтетична моторна олива 0W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "17",
-      "brand": "Valvoline",
+      "brandId": "valvoline",
+      "categoryId": "motor-oils",
       "name": "Restore & Protect",
+      "kind": "motor_oil",
       "viscosity": "5W-30",
       "volumeLiters": 4,
       "priceUah": 1799,
-      "promoDiscountPercent": 11
+      "promoDiscountPercent": 11,
+      "inStock": true,
+      "article": "OI-17",
+      "description": "Синтетична моторна олива 5W-30, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "18",
-      "brand": "Castrol",
+      "brandId": "castrol",
+      "categoryId": "motor-oils",
       "name": "GTX Ultraclean",
+      "kind": "motor_oil",
       "viscosity": "10W-40",
       "volumeLiters": 4,
       "priceUah": 799,
-      "promoDiscountPercent": 19
+      "promoDiscountPercent": 19,
+      "inStock": true,
+      "article": "OI-18",
+      "description": "Синтетична моторна олива 10W-40, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "19",
-      "brand": "Shell",
+      "brandId": "shell",
+      "categoryId": "motor-oils",
       "name": "Helix Ultra Professional AV-L",
+      "kind": "motor_oil",
       "viscosity": "0W-30",
       "volumeLiters": 5,
       "priceUah": 2299,
-      "promoDiscountPercent": 13
+      "promoDiscountPercent": 13,
+      "inStock": true,
+      "article": "OI-19",
+      "description": "Синтетична моторна олива 0W-30, 5 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
     },
     {
       "id": "20",
-      "brand": "Liqui Moly",
+      "brandId": "liqui-moly",
+      "categoryId": "motor-oils",
       "name": "Special Tec AA",
+      "kind": "motor_oil",
       "viscosity": "5W-20",
       "volumeLiters": 4,
       "priceUah": 1899,
-      "promoDiscountPercent": 11
+      "promoDiscountPercent": 11,
+      "inStock": true,
+      "article": "OI-20",
+      "description": "Синтетична моторна олива 5W-20, 4 л. Підходить для сучасних бензинових і дизельних двигунів; перевіряйте допуски виробника авто."
+    },
+    {
+      "id": "21",
+      "brandId": "mann-filter",
+      "categoryId": "filters",
+      "name": "HU 816 x",
+      "kind": "filter",
+      "filterRole": "oil",
+      "partNumber": "HU 816 x",
+      "priceUah": 459,
+      "inStock": true,
+      "article": "MF-HU816X",
+      "description": "Фільтр відповідної конструкції для заміни за регламентом. Звіряйте застосовність за VIN або каталогом."
+    },
+    {
+      "id": "22",
+      "brandId": "bosch",
+      "categoryId": "antifreeze",
+      "name": "Auto Coolant Plus",
+      "kind": "antifreeze",
+      "volumeLiters": 5,
+      "freezePointC": -37,
+      "specification": "G12++",
+      "priceUah": 999,
+      "inStock": true,
+      "article": "BSH-COOL5-G12",
+      "description": "Охолоджуюча рідина з заявленою специфікацією. Не змішуйте з різними типами без рекомендації виробника."
+    },
+    {
+      "id": "23",
+      "brandId": "bosch",
+      "categoryId": "brake-fluids",
+      "name": "Brake Fluid SL",
+      "kind": "brake_fluid",
+      "volumeLiters": 1,
+      "dot": "DOT4",
+      "priceUah": 249,
+      "inStock": false,
+      "article": "BSH-BF-DOT4-1L",
+      "description": "Гальмівна рідина відповідного класу DOT. Уникайте контакту з лакофарбовими поверхнями."
+    },
+    {
+      "id": "24",
+      "brandId": "ngk",
+      "categoryId": "spark-plugs",
+      "name": "Laser Iridium IZFR6K-11",
+      "kind": "spark_plug",
+      "thread": "M14 x 1.25",
+      "electrode": "Laser iridium",
+      "heatRange": "6",
+      "priceUah": 389,
+      "promoDiscountPercent": 8,
+      "inStock": true,
+      "article": "NGK-IZFR6K11",
+      "description": "Свічка запалювання підібрана за різьбою та тепловим діапазоном; дотримуйтесь моменту затягування."
+    },
+    {
+      "id": "25",
+      "brandId": "bosch",
+      "categoryId": "consumables",
+      "name": "Aerotwin Wiper blades 600/475 mm",
+      "kind": "other_consumable",
+      "summary": "600 / 475 mm · front axle pair",
+      "priceUah": 899,
+      "inStock": false,
+      "article": "BSH-AERO-600475",
+      "description": "Автотовар загального призначення. Перевіряйте сумісність перед покупкою."
     }
   ]
 }

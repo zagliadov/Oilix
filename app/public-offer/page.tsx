@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
@@ -11,13 +12,8 @@ import { loadPublicOfferText } from "@/app/lib/legal/load-public-offer";
 
 import { PublicOfferBlocks } from "./public-offer-blocks";
 
-export const generateMetadata = async () => {
-  const offerTranslations = await getTranslations("PublicOffer");
-  return {
-    title: offerTranslations("metaTitle"),
-    description: offerTranslations("metaDescription"),
-  };
-};
+export const generateMetadata = async () =>
+  buildStorefrontSectionMetadata("PublicOffer", "/public-offer");
 
 export default async function PublicOfferPage() {
   const locale = await getLocale();

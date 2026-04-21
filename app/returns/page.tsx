@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
@@ -12,13 +13,8 @@ import { LanguageTransition } from "@/components/language-transition";
 const consumerProtectionLawUrl =
   "https://zakon.rada.gov.ua/cgi-bin/laws/main.cgi?nreg=1023-12";
 
-export const generateMetadata = async () => {
-  const returnsTranslations = await getTranslations("Returns");
-  return {
-    title: returnsTranslations("metaTitle"),
-    description: returnsTranslations("metaDescription"),
-  };
-};
+export const generateMetadata = async () =>
+  buildStorefrontSectionMetadata("Returns", "/returns");
 
 export default async function ReturnsPage() {
   const returnsTranslations = await getTranslations("Returns");

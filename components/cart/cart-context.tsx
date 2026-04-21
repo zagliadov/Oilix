@@ -11,16 +11,17 @@ import {
   type ReactNode,
 } from "react";
 
+import { getCartSubtotalUahFromLines } from "@/app/lib/cart/cart-line-price";
 import { CART_STORAGE_KEY, type CartLine } from "@/app/lib/cart/cart-types";
-import {
-  getCatalogProductById,
-  getEffectivePriceUah,
-} from "@/app/lib/mocks/catalog-products";
+import { getStoreProductById } from "@/app/lib/catalog";
 
 type CartContextValue = {
   lines: CartLine[];
   isReady: boolean;
+  /** Number of distinct lines that resolve to a catalog product. */
+  lineCount: number;
   totalQuantity: number;
+  /** Sum of line subtotals (effective prices × qty). */
   totalPriceUah: number;
   addProduct: (productId: string, quantity?: number) => void;
   setLineQuantity: (productId: string, quantity: number) => void;
@@ -50,7 +51,7 @@ const parseStoredLines = (raw: string | null): CartLine[] => {
           typeof (entry as CartLine).quantity === "number"
         ) {
           const productId = (entry as CartLine).productId;
-          if (!getCatalogProductById(productId)) {
+          if (!getStoreProductById(productId)) {
             return null;
           }
           const quantity = Math.floor((entry as CartLine).quantity);
@@ -144,24 +145,20 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setLines([]);
   }, []);
 
-  const totalQuantity = useMemo(
-    () =>
-      _.sumBy(
-        _.filter(lines, (line) => Boolean(getCatalogProductById(line.productId))),
-        (line) => line.quantity,
-      ),
+  const validLines = useMemo(
+    () => _.filter(lines, (line) => Boolean(getStoreProductById(line.productId))),
     [lines],
   );
 
+  const lineCount = useMemo(() => validLines.length, [validLines]);
+
+  const totalQuantity = useMemo(
+    () => _.sumBy(validLines, (line) => line.quantity),
+    [validLines],
+  );
+
   const totalPriceUah = useMemo(
-    () =>
-      _.sumBy(lines, (line) => {
-        const product = getCatalogProductById(line.productId);
-        if (!product) {
-          return 0;
-        }
-        return getEffectivePriceUah(product) * line.quantity;
-      }),
+    () => getCartSubtotalUahFromLines(lines, getStoreProductById),
     [lines],
   );
 
@@ -169,6 +166,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     () => ({
       lines,
       isReady,
+      lineCount,
       totalQuantity,
       totalPriceUah,
       addProduct,
@@ -179,6 +177,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     [
       lines,
       isReady,
+      lineCount,
       totalQuantity,
       totalPriceUah,
       addProduct,
