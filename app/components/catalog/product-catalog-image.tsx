@@ -13,7 +13,7 @@ type ProductCatalogImageProps = {
 
 /**
  * Product photo (same-origin `/api/blob/image` or placeholder).
- * Uses inline `aspect-ratio` so the frame always has height (Tailwind `aspect-*` alone can be dropped from CSS).
+ * Uses inline `aspect-ratio` so the frame always - has height (Tailwind `aspect-*` alone can be dropped from CSS).
  */
 export const ProductCatalogImage = ({
   imageUrl,
