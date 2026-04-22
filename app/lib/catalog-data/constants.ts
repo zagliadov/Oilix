@@ -1,5 +1,5 @@
 /**
- * Relative path from project root to the catalog JSON (mock source of truth on disk).
- * Admin and future migration code use fs; storefront continues to use the bundled import in `app/lib/catalog/bundle.ts`.
+ * One-time import source for `npm run db:seed` (not read by the app at runtime).
+ * To refresh seed data, edit this file and re-run the seed (or use admin SQL).
  */
-export const CATALOG_JSON_RELATIVE_PATH = "data/catalog.json" as const;
+export const SEED_CATALOG_RELATIVE_PATH = "scripts/seed/catalog.json" as const;

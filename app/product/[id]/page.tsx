@@ -13,23 +13,26 @@ import { ProductShelf } from "@/app/components/product/product-shelf";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
-import { ProductImagePlaceholder } from "@/app/components/landing/product-image-placeholder";
+import { ProductCatalogImage } from "@/app/components/catalog/product-catalog-image";
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { renderProductDetailSpecRows } from "@/app/components/catalog/product-detail-spec-rows";
 import { formatPriceUah } from "@/app/lib/format-price";
-import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
+import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
+import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
 import type { ProductCardLabels } from "@/app/components/catalog/product-card";
 import {
+  buildCatalogIndexes,
   getBrandNameForProduct,
-  getCategoryById,
+  getCategoryByIdInCatalog,
   getCrossSellProducts,
+  getProductCardImageUrlInCatalog,
   getDiscountPercent,
   getEffectivePriceUah,
   getProductCardSpecLine,
+  getProductIdParams,
   getRelatedProducts,
-  getStoreProductById,
-  storeProducts,
+  getStoreProductByIdInCatalog,
 } from "@/app/lib/catalog";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { LanguageTransition } from "@/components/language-transition";
@@ -46,12 +49,15 @@ type ProductPageProps = {
 
 export const dynamicParams = false;
 
-export const generateStaticParams = () =>
-  storeProducts.map((product) => ({ id: product.id }));
+export const generateStaticParams = async () => {
+  const bundle = await getCatalogBundle();
+  return getProductIdParams(buildCatalogIndexes(bundle));
+};
 
 export const generateMetadata = async ({ params }: ProductPageProps) => {
   const { id } = await params;
-  const product = getStoreProductById(id);
+  const catalog = buildCatalogIndexes(await getCatalogBundle());
+  const product = getStoreProductByIdInCatalog(id, catalog);
   const productTranslations = await getTranslations("Product");
   const landingTranslations = await getTranslations("Landing");
   const productPath = `/product/${id}`;
@@ -65,7 +71,7 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
   }
 
   const priceFormatted = formatPriceUah(getEffectivePriceUah(product));
-  const brandName = getBrandNameForProduct(product);
+  const brandName = getBrandNameForProduct(product, catalog);
   const summary = getProductCardSpecLine(
     product,
     buildProductCardSpecContextFromLanding((key) => landingTranslations(key)),
@@ -88,27 +94,31 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
-  const product = getStoreProductById(id);
+  const catalog = buildCatalogIndexes(await getCatalogBundle());
+  const product = getStoreProductByIdInCatalog(id, catalog);
 
   if (!product) {
     notFound();
   }
 
+  const listForRelations = catalog.bundle.products;
+
   const landingTranslations = await getTranslations("Landing");
   const productTranslations = await getTranslations("Product");
   const discountPercent = getDiscountPercent(product);
   const effectivePriceUah = getEffectivePriceUah(product);
-  const brandName = getBrandNameForProduct(product);
-  const category = getCategoryById(product.categoryId);
+  const brandName = getBrandNameForProduct(product, catalog);
+  const category = getCategoryByIdInCatalog(product.categoryId, catalog);
   const categoryName = category !== undefined ? category.name : product.categoryId;
 
   const specContext = buildProductCardSpecContextFromLanding((key) =>
     landingTranslations(key),
   );
   const specLine = getProductCardSpecLine(product, specContext);
+  const heroImageUrl = getProductCardImageUrlInCatalog(product.id, catalog);
 
-  const relatedProducts = getRelatedProducts(product, storeProducts, 4);
-  const crossSellRaw = getCrossSellProducts(product, storeProducts, 8);
+  const relatedProducts = getRelatedProducts(product, listForRelations, 4);
+  const crossSellRaw = getCrossSellProducts(product, listForRelations, 8);
   const relatedIds = new Set(_.map(relatedProducts, (item) => item.id));
   const crossSellProducts = _.take(
     _.filter(crossSellRaw, (item) => !relatedIds.has(item.id)),
@@ -162,10 +172,15 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
             <div className="mt-8 grid gap-10 lg:grid-cols-12 lg:gap-12 xl:gap-16">
               <div className="lg:col-span-5 xl:col-span-5">
-                <ProductImagePlaceholder
-                  label={landingTranslations("products.noImage")}
-                  className="lg:sticky lg:top-24"
-                />
+                <div className="lg:sticky lg:top-24">
+                  <ProductCatalogImage
+                    imageUrl={heroImageUrl}
+                    alt={`${brandName} ${product.name}`}
+                    noImageLabel={landingTranslations("products.noImage")}
+                    aspectClassName="aspect-square"
+                    imageClassName="p-3 sm:p-4"
+                  />
+                </div>
               </div>
 
               <div className="flex flex-col lg:col-span-7 xl:col-span-7">
@@ -240,12 +255,14 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 title={productTranslations("relatedTitle")}
                 products={relatedProducts}
                 labels={cardLabels}
+                catalog={catalog}
               />
               <ProductShelf
                 sectionId="cross-sell"
                 title={productTranslations("crossSellTitle")}
                 products={crossSellProducts}
                 labels={cardLabels}
+                catalog={catalog}
               />
             </div>
           </SectionShell>

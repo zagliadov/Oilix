@@ -8,11 +8,8 @@ import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
 import { LandingHeader } from "@/app/components/landing/landing-header";
 import { SectionShell } from "@/app/components/landing/section-shell";
-import {
-  catalogIndexes,
-  computeEffectivePriceBounds,
-  storeProducts,
-} from "@/app/lib/catalog";
+import { buildCatalogIndexes, computeEffectivePriceBounds } from "@/app/lib/catalog";
+import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { LanguageTransition } from "@/components/language-transition";
 
 export const generateMetadata = async () =>
@@ -21,7 +18,8 @@ export const generateMetadata = async () =>
 export default async function CatalogPage() {
   const catalogTranslations = await getTranslations("Catalog");
 
-  const { brands, categories } = catalogIndexes.bundle;
+  const catalog = buildCatalogIndexes(await getCatalogBundle());
+  const { brands, categories, products: storeProducts } = catalog.bundle;
   const priceBounds = computeEffectivePriceBounds(storeProducts);
 
   return (
@@ -56,6 +54,7 @@ export default async function CatalogPage() {
                 brands={brands}
                 categories={categories}
                 priceBounds={priceBounds}
+                catalog={catalog}
               />
             </div>
           </SectionShell>

@@ -15,6 +15,7 @@ import {
   type CatalogSortId,
   type StockAvailabilityFilter,
 } from "@/app/lib/catalog/catalog-query";
+import type { CatalogIndexes } from "@/app/lib/catalog";
 import type { Brand } from "@/app/lib/catalog/types/brand";
 import type { ProductCategory } from "@/app/lib/catalog/types/category";
 import type { BrandId, CategoryId } from "@/app/lib/catalog/types/shared";
@@ -31,6 +32,7 @@ type CatalogExplorerProps = {
   brands: readonly Brand[];
   categories: readonly ProductCategory[];
   priceBounds: { min: number; max: number };
+  catalog: CatalogIndexes;
 };
 
 const toggleId = <T extends string>(
@@ -53,6 +55,7 @@ export const CatalogExplorer = ({
   brands,
   categories,
   priceBounds,
+  catalog,
 }: CatalogExplorerProps) => {
   const catalogTranslations = useTranslations("Catalog");
   const landingTranslations = useTranslations("Landing");
@@ -359,8 +362,12 @@ export const CatalogExplorer = ({
       ) : (
         <ul className="grid w-full list-none grid-cols-1 gap-6 p-0 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {_.map(visibleProducts, (product) => (
-            <li key={product.id}>
-              <ProductCard product={product} labels={cardLabels} />
+            <li key={product.id} className="min-w-0">
+              <ProductCard
+                product={product}
+                labels={cardLabels}
+                catalog={catalog}
+              />
             </li>
           ))}
         </ul>

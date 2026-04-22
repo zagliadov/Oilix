@@ -19,7 +19,7 @@ export const adminLoginAction = async (
   if (!isAdminAuthConfigured()) {
     return {
       ok: false,
-      errorMessage: "Admin login is not configured (missing ADMIN_PASSWORD).",
+      errorMessage: "Вход в админку не настроен (нет ADMIN_PASSWORD).",
     };
   }
 
@@ -29,13 +29,13 @@ export const adminLoginAction = async (
   if (expected === undefined || password !== expected) {
     return {
       ok: false,
-      errorMessage: "Invalid password.",
+      errorMessage: "Неверный пароль.",
     };
   }
 
   const secret = getSessionSecret();
   if (secret === undefined) {
-    return { ok: false, errorMessage: "Session secret is not available." };
+    return { ok: false, errorMessage: "Секрет сессии недоступен." };
   }
 
   const token = await createAdminSessionToken(secret);

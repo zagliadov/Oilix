@@ -3,7 +3,7 @@
 import { Minus, Plus, Trash2 } from "lucide-react";
 import Link from "next/link";
 
-import { ProductImagePlaceholder } from "@/app/components/landing/product-image-placeholder";
+import { ProductCatalogImage } from "@/app/components/catalog/product-catalog-image";
 import { formatPriceUah } from "@/app/lib/format-price";
 import type { ProductCardSpecContext } from "@/app/lib/catalog";
 import { getCartLineSubtotalUah } from "@/app/lib/cart/cart-line-price";
@@ -11,9 +11,11 @@ import type { CartLine } from "@/app/lib/cart/cart-types";
 import {
   getBrandNameForProduct,
   getEffectivePriceUah,
+  getProductCardImageUrlInCatalog,
   getProductCardSpecLine,
-  getStoreProductById,
+  getStoreProductByIdInCatalog,
 } from "@/app/lib/catalog";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
   storefrontQuantityRail,
   storefrontSurfaceCard,
@@ -46,15 +48,17 @@ export const CartLineRow = ({
   onQuantityChange,
   onRemove,
 }: CartLineRowProps) => {
-  const product = getStoreProductById(line.productId);
+  const catalog = useStorefrontCatalog();
+  const product = getStoreProductByIdInCatalog(line.productId, catalog);
   if (!product) {
     return null;
   }
 
-  const brandName = getBrandNameForProduct(product);
+  const brandName = getBrandNameForProduct(product, catalog);
   const specLine = getProductCardSpecLine(product, specContext);
   const unitPriceUah = getEffectivePriceUah(product);
   const lineSubtotalUah = getCartLineSubtotalUah(product, line.quantity);
+  const lineImageUrl = getProductCardImageUrlInCatalog(product.id, catalog);
 
   return (
     <li className={storefrontSurfaceCard}>
@@ -64,7 +68,11 @@ export const CartLineRow = ({
           className="group flex min-w-0 flex-1 gap-4"
         >
           <div className="w-20 shrink-0 overflow-hidden rounded-lg border border-border/60 bg-muted/20 dark:border-white/10 sm:w-22">
-            <ProductImagePlaceholder label={noImageLabel} className="aspect-square" />
+            <ProductCatalogImage
+              imageUrl={lineImageUrl}
+              alt={product.name}
+              noImageLabel={noImageLabel}
+            />
           </div>
           <div className="min-w-0 flex-1">
             <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-muted-foreground">

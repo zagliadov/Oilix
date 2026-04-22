@@ -42,12 +42,12 @@ const getRequiredInt = (
 ): number | null => {
   const raw = getString(formData, key);
   if (raw === "") {
-    errors.push(`${label} is required.`);
+    errors.push(`Поле «${label}» обязательно.`);
     return null;
   }
   const value = Number.parseInt(raw, 10);
   if (Number.isNaN(value)) {
-    errors.push(`${label} must be a whole number.`);
+    errors.push(`«${label}» должно быть целым числом.`);
     return null;
   }
   return value;
@@ -61,12 +61,12 @@ const getRequiredFloat = (
 ): number | null => {
   const raw = getString(formData, key);
   if (raw === "") {
-    errors.push(`${label} is required.`);
+    errors.push(`Поле «${label}» обязательно.`);
     return null;
   }
   const value = Number.parseFloat(raw);
   if (Number.isNaN(value)) {
-    errors.push(`${label} must be a number.`);
+    errors.push(`«${label}» должно быть числом.`);
     return null;
   }
   return value;
@@ -82,7 +82,7 @@ const getOptionalPromoPercent = (
   }
   const value = Number.parseInt(raw, 10);
   if (Number.isNaN(value) || value < 0 || value > 100) {
-    errors.push("Promo discount must be between 0 and 100.");
+    errors.push("Скидка по акции должна быть от 0 до 100.");
     return undefined;
   }
   return value === 0 ? undefined : value;
@@ -104,11 +104,11 @@ const validateBrandAndCategory = (
 ): void => {
   const brandFound = _.some(bundle.brands, { id: brandId });
   if (!brandFound) {
-    errors.push("Unknown brand.");
+    errors.push("Неизвестный бренд.");
   }
   const categoryFound = _.some(bundle.categories, { id: categoryId });
   if (!categoryFound) {
-    errors.push("Unknown category.");
+    errors.push("Неизвестная категория.");
   }
 };
 
@@ -122,44 +122,44 @@ export const parseProductFromFormData = (
   if (mode.mode === "edit") {
     const submittedId = getString(formData, "id");
     if (submittedId !== mode.productId) {
-      errors.push("Product id mismatch.");
+      errors.push("Id товара не совпадает.");
     }
   }
 
   const kindRaw = getString(formData, "kind");
   if (!isProductKind(kindRaw)) {
-    errors.push("Invalid product kind.");
+    errors.push("Недопустимый тип товара.");
   }
 
   const productId = mode.productId;
   if (productId === "") {
-    errors.push("Product id is missing.");
+    errors.push("Не указан id товара.");
   }
 
   const brandId = getString(formData, "brandId");
   const categoryId = getString(formData, "categoryId");
   const name = getString(formData, "name");
   if (name === "") {
-    errors.push("Name is required.");
+    errors.push("Укажите название.");
   }
 
-  const priceUah = getRequiredInt(formData, "priceUah", errors, "Price (₴)");
+  const priceUah = getRequiredInt(formData, "priceUah", errors, "Цена (₴)");
   const inStock = formData.get("inStock") === "on";
   const article = getOptionalString(formData, "article");
   const description = getOptionalString(formData, "description");
   const promoDiscountPercent = getOptionalPromoPercent(formData, errors);
 
   if (brandId === "") {
-    errors.push("Brand is required.");
+    errors.push("Выберите бренд.");
   }
   if (categoryId === "") {
-    errors.push("Category is required.");
+    errors.push("Выберите категорию.");
   }
 
   if (errors.length > 0 || !isProductKind(kindRaw) || priceUah === null) {
     return {
       ok: false,
-      errors: errors.length > 0 ? errors : ["Invalid form data."],
+      errors: errors.length > 0 ? errors : ["Некорректные данные формы."],
     };
   }
 
@@ -187,9 +187,9 @@ export const parseProductFromFormData = (
   switch (kindRaw) {
     case ProductKind.MotorOil: {
       const viscosity = getString(formData, "viscosity");
-      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Volume (L)");
+      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Объём (л)");
       if (viscosity === "") {
-        errors.push("Viscosity is required.");
+        errors.push("Укажите вязкость.");
       }
       if (volumeLiters === null || errors.length > 0) {
         return { ok: false, errors };
@@ -206,7 +206,7 @@ export const parseProductFromFormData = (
       const filterRoleRaw = getString(formData, "filterRole");
       const partNumber = getOptionalString(formData, "partNumber");
       if (!FILTER_ROLE_VALUES.includes(filterRoleRaw as FilterRole)) {
-        errors.push("Invalid filter role.");
+        errors.push("Недопустимая роль фильтра.");
       }
       if (errors.length > 0) {
         return { ok: false, errors };
@@ -220,12 +220,12 @@ export const parseProductFromFormData = (
       break;
     }
     case ProductKind.Antifreeze: {
-      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Volume (L)");
+      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Объём (л)");
       const freezePointC = getRequiredFloat(
         formData,
         "freezePointC",
         errors,
-        "Freeze point (°C)",
+        "Температура замерзания (°C)",
       );
       const specification = getOptionalString(formData, "specification");
       if (volumeLiters === null || freezePointC === null || errors.length > 0) {
@@ -241,10 +241,10 @@ export const parseProductFromFormData = (
       break;
     }
     case ProductKind.BrakeFluid: {
-      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Volume (L)");
+      const volumeLiters = getRequiredFloat(formData, "volumeLiters", errors, "Объём (л)");
       const dotRaw = getString(formData, "dot");
       if (!BRAKE_DOT_VALUES.includes(dotRaw as BrakeFluidDot)) {
-        errors.push("Invalid DOT rating.");
+        errors.push("Недопустимая маркировка DOT.");
       }
       if (volumeLiters === null || errors.length > 0) {
         return { ok: false, errors };
@@ -262,7 +262,7 @@ export const parseProductFromFormData = (
       const electrode = getOptionalString(formData, "electrode");
       const heatRange = getOptionalString(formData, "heatRange");
       if (thread === "") {
-        errors.push("Thread is required.");
+        errors.push("Укажите резьбу.");
       }
       if (errors.length > 0) {
         return { ok: false, errors };
@@ -279,7 +279,7 @@ export const parseProductFromFormData = (
     case ProductKind.OtherConsumable: {
       const summary = getString(formData, "summary");
       if (summary === "") {
-        errors.push("Summary is required.");
+        errors.push("Укажите краткое описание.");
       }
       if (errors.length > 0) {
         return { ok: false, errors };
@@ -292,7 +292,7 @@ export const parseProductFromFormData = (
       break;
     }
     default: {
-      return { ok: false, errors: ["Unsupported product kind."] };
+      return { ok: false, errors: ["Неподдерживаемый тип товара."] };
     }
   }
 

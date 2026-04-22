@@ -3,8 +3,10 @@ import { Inter, Oswald } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 
+import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { resolveMetadataBase } from "@/app/lib/seo/page-metadata";
 import { CartProvider } from "@/components/cart/cart-context";
+import { StorefrontCatalogProvider } from "@/components/storefront/storefront-catalog-provider";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import "./globals.css";
@@ -65,6 +67,7 @@ export default async function RootLayout({
 }>) {
   const locale = await getLocale();
   const messages = await getMessages();
+  const catalogBundle = await getCatalogBundle();
 
   return (
     <html
@@ -83,7 +86,9 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <CartProvider>{children}</CartProvider>
+            <StorefrontCatalogProvider bundle={catalogBundle}>
+              <CartProvider>{children}</CartProvider>
+            </StorefrontCatalogProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

@@ -4,11 +4,13 @@ import {
   getBrandNameForProduct,
   getDiscountPercent,
   getEffectivePriceUah,
+  getProductCardImageUrlInCatalog,
   getProductCardSpecLine,
+  type CatalogIndexes,
   type ProductCardSpecContext,
   type StoreProduct,
 } from "@/app/lib/catalog";
-import { ProductImagePlaceholder } from "@/app/components/landing/product-image-placeholder";
+import { ProductCatalogImage } from "@/app/components/catalog/product-catalog-image";
 import { formatPriceUah } from "@/app/lib/format-price";
 import { CatalogCartIconButton } from "@/components/cart/catalog-cart-icon-button";
 import {
@@ -28,24 +30,32 @@ export type ProductCardLabels = {
 type ProductCardProps = {
   product: StoreProduct;
   labels: ProductCardLabels;
+  catalog: CatalogIndexes;
 };
 
-export const ProductCard = ({ product, labels }: ProductCardProps) => {
+export const ProductCard = ({ product, labels, catalog }: ProductCardProps) => {
   const discountPercent = getDiscountPercent(product);
   const effectivePriceUah = getEffectivePriceUah(product);
-  const brandName = getBrandNameForProduct(product);
+  const brandName = getBrandNameForProduct(product, catalog);
   const specLine = getProductCardSpecLine(product, labels);
   const ariaLabel = `${labels.viewProduct}: ${brandName} ${product.name}`;
+  const cardImageUrl = getProductCardImageUrlInCatalog(product.id, catalog);
 
   return (
-    <article className={`flex h-full flex-col ${storefrontProductCard}`}>
+    <article className={`flex h-full w-full min-w-0 flex-col ${storefrontProductCard}`}>
       <Link
         href={`/product/${product.id}`}
-        className="group block flex flex-1 flex-col p-4 pb-3 no-underline outline-none transition focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+        className="group flex flex-1 flex-col p-4 pb-3 no-underline outline-none transition focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label={ariaLabel}
       >
-        <div className="relative">
-          <ProductImagePlaceholder label={labels.noImage} />
+        <div className="relative w-full min-w-0">
+          <ProductCatalogImage
+            imageUrl={cardImageUrl}
+            alt={`${brandName} ${product.name}`}
+            noImageLabel={labels.noImage}
+            aspectClassName="aspect-[3/4]"
+            imageClassName="p-2 sm:p-3"
+          />
           {discountPercent !== null ? (
             <span className={`absolute left-2 top-2 ${storefrontBadgePromoSolid}`}>
               −{discountPercent}% · {labels.promoBadge}

@@ -1,29 +1,43 @@
-import Image from "next/image";
+import { frameAspectFromAspectClass } from "@/app/lib/ui/frame-aspect";
 
 type ProductImagePlaceholderProps = {
   label: string;
   className?: string;
+  /** Hint for aspect, e.g. `aspect-[3/4]`. */
+  aspectClassName?: string;
+  /** When set, skips recomputing (same as `frameAspectFromAspectClass(aspectClassName)`). */
+  frameAspect?: string;
 };
 
+/**
+ * `public/no_image.png` is a combined asset: [light | dark] side by side. The inner strip is
+ * 200% of the frame width; in `.dark` we shift by 50% of that strip so the right (dark) tile shows.
+ */
 export const ProductImagePlaceholder = ({
   label,
   className = "",
-}: ProductImagePlaceholderProps) => (
-  <div
-    className={`relative aspect-square w-full overflow-hidden rounded-md border border-border bg-muted/30 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.12)] transition-colors dark:border-white/10 dark:bg-zinc-900/40 dark:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] ${className}`}
-  >
-    <div className="absolute inset-0">
-      <div className="relative h-full w-[200%] transition-transform duration-200 ease-out will-change-transform dark:-translate-x-1/2">
-        <Image
-          src="/no_image.png"
-          alt=""
-          fill
-          quality={100}
-          className="object-cover object-center"
-          sizes="(max-width: 639px) 200vw, (max-width: 1023px) 100vw, (max-width: 1279px) 66vw, 50vw"
-        />
+  aspectClassName = "aspect-square",
+  frameAspect: frameAspectProp,
+}: ProductImagePlaceholderProps) => {
+  const frameAspect = frameAspectProp ?? frameAspectFromAspectClass(aspectClassName);
+  return (
+    <div
+      className={`relative min-w-0 w-full overflow-hidden rounded-md border border-border ${className}`}
+      style={{ aspectRatio: frameAspect }}
+    >
+      <div className="absolute inset-0 overflow-hidden">
+        <div
+          className="relative h-full w-[200%] transition-transform duration-200 ease-out will-change-transform dark:-translate-x-1/2"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element -- /public no_image: dual-theme sprite */}
+          <img
+            src="/no_image.png"
+            alt=""
+            className="absolute left-0 top-0 h-full w-full object-cover"
+          />
+        </div>
       </div>
+      <span className="sr-only">{label}</span>
     </div>
-    <span className="sr-only">{label}</span>
-  </div>
-);
+  );
+};

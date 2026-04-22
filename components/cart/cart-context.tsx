@@ -13,7 +13,8 @@ import {
 
 import { getCartSubtotalUahFromLines } from "@/app/lib/cart/cart-line-price";
 import { CART_STORAGE_KEY, type CartLine } from "@/app/lib/cart/cart-types";
-import { getStoreProductById } from "@/app/lib/catalog";
+import { getStoreProductByIdInCatalog } from "@/app/lib/catalog";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 
 type CartContextValue = {
   lines: CartLine[];
@@ -31,7 +32,10 @@ type CartContextValue = {
 
 const CartContext = createContext<CartContextValue | null>(null);
 
-const parseStoredLines = (raw: string | null): CartLine[] => {
+const parseStoredLines = (
+  raw: string | null,
+  isValidProductId: (productId: string) => boolean,
+): CartLine[] => {
   if (!raw) {
     return [];
   }
@@ -51,7 +55,7 @@ const parseStoredLines = (raw: string | null): CartLine[] => {
           typeof (entry as CartLine).quantity === "number"
         ) {
           const productId = (entry as CartLine).productId;
-          if (!getStoreProductById(productId)) {
+          if (!isValidProductId(productId)) {
             return null;
           }
           const quantity = Math.floor((entry as CartLine).quantity);
@@ -72,6 +76,7 @@ const parseStoredLines = (raw: string | null): CartLine[] => {
 };
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
+  const catalog = useStorefrontCatalog();
   const [lines, setLines] = useState<CartLine[]>([]);
   const [isReady, setIsReady] = useState(false);
 
@@ -81,10 +86,14 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     }
     // Hydrate from localStorage after mount (SSR-safe default []).
     queueMicrotask(() => {
-      setLines(parseStoredLines(localStorage.getItem(CART_STORAGE_KEY)));
+      setLines(
+        parseStoredLines(localStorage.getItem(CART_STORAGE_KEY), (productId) =>
+          Boolean(catalog.productById.get(productId)),
+        ),
+      );
       setIsReady(true);
     });
-  }, []);
+  }, [catalog]);
 
   useEffect(() => {
     if (!isReady || typeof window === "undefined") {
@@ -146,8 +155,13 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const validLines = useMemo(
-    () => _.filter(lines, (line) => Boolean(getStoreProductById(line.productId))),
-    [lines],
+    () =>
+      _.filter(lines, (line) =>
+        Boolean(
+          getStoreProductByIdInCatalog(line.productId, catalog),
+        ),
+      ),
+    [lines, catalog],
   );
 
   const lineCount = useMemo(() => validLines.length, [validLines]);
@@ -157,9 +171,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     [validLines],
   );
 
+  const getProduct = useCallback(
+    (productId: string) =>
+      getStoreProductByIdInCatalog(productId, catalog) ?? undefined,
+    [catalog],
+  );
+
   const totalPriceUah = useMemo(
-    () => getCartSubtotalUahFromLines(lines, getStoreProductById),
-    [lines],
+    () => getCartSubtotalUahFromLines(lines, getProduct),
+    [lines, getProduct],
   );
 
   const value = useMemo(

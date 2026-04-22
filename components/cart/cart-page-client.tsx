@@ -8,8 +8,9 @@ import { useTranslations } from "next-intl";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
 import { formatPriceUah } from "@/app/lib/format-price";
-import { getStoreProductById } from "@/app/lib/catalog";
+import { getStoreProductByIdInCatalog } from "@/app/lib/catalog";
 import { useCart } from "@/components/cart/cart-context";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
   storefrontButtonPrimary,
   storefrontButtonPrimaryPaddingCompact,
@@ -25,6 +26,7 @@ import {
 export const CartPageClient = () => {
   const cartTranslations = useTranslations("Cart");
   const landingTranslations = useTranslations("Landing");
+  const catalog = useStorefrontCatalog();
   const {
     lines,
     isReady,
@@ -59,7 +61,7 @@ export const CartPageClient = () => {
   }
 
   const validLines = _.filter(lines, (line) =>
-    Boolean(getStoreProductById(line.productId)),
+    Boolean(getStoreProductByIdInCatalog(line.productId, catalog)),
   );
 
   if (validLines.length === 0) {

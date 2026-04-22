@@ -2,7 +2,7 @@ import * as _ from "lodash";
 
 import type { CartLine } from "@/app/lib/cart/cart-types";
 import { getCartLineSubtotalUah } from "@/app/lib/cart/cart-line-price";
-import { getStoreProductById } from "@/app/lib/catalog";
+import type { StoreProduct } from "@/app/lib/catalog/types/product";
 
 import type {
   CheckoutFormValues,
@@ -10,9 +10,12 @@ import type {
   CheckoutSubmitPayload,
 } from "./types";
 
+type ProductResolver = (productId: string) => StoreProduct | undefined;
+
 export const buildCheckoutSubmitPayload = (
   formValues: CheckoutFormValues,
   cartLines: readonly CartLine[],
+  getProduct: ProductResolver,
 ): CheckoutSubmitPayload | null => {
   if (
     formValues.deliveryMethod === "" ||
@@ -23,7 +26,7 @@ export const buildCheckoutSubmitPayload = (
 
   const resolvedLines: CheckoutPayloadLine[] = _.compact(
     _.map(cartLines, (line) => {
-      const product = getStoreProductById(line.productId);
+      const product = getProduct(line.productId);
       if (!product) {
         return null;
       }

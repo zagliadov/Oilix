@@ -17,6 +17,8 @@ import { suggestNextProductId } from "@/app/lib/catalog-data/product-ids";
 export type ProductFormActionState = {
   ok: boolean;
   errors?: string[];
+  /** Set after a successful update in edit mode (stays on the same page). */
+  saved?: boolean;
 };
 
 export const createProductAction = async (
@@ -46,7 +48,7 @@ export const updateProductAction = async (
   const idRaw = formData.get("id");
   const id = typeof idRaw === "string" ? idRaw.trim() : "";
   if (id === "") {
-    return { ok: false, errors: ["Product id is missing."] };
+    return { ok: false, errors: ["Не указан id товара."] };
   }
   const bundle = await readCatalogBundleFromFile();
   const parsed = parseProductFromFormData(formData, bundle, {
@@ -58,11 +60,12 @@ export const updateProductAction = async (
   }
   const existing = await getProductById(id);
   if (existing === undefined) {
-    return { ok: false, errors: ["Product no longer exists."] };
+    return { ok: false, errors: ["Товар больше не существует."] };
   }
   await updateProduct(parsed.product);
   revalidatePath("/admin/products");
-  redirect("/admin/products");
+  revalidatePath(`/admin/products/${encodeURIComponent(id)}/edit`);
+  return { ok: true, saved: true };
 };
 
 export const deleteProductAction = async (formData: FormData): Promise<void> => {

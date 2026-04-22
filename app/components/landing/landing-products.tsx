@@ -6,12 +6,14 @@ import { ProductCard } from "@/app/components/catalog/product-card";
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { StickyHeading } from "@/components/motion/sticky-heading";
+import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
-import { getPromoProducts } from "@/app/lib/catalog";
+import { buildCatalogIndexes, selectPromoProducts } from "@/app/lib/catalog";
 
 export const LandingProducts = async () => {
   const landingTranslations = await getTranslations("Landing");
-  const promoProducts = getPromoProducts();
+  const catalog = buildCatalogIndexes(await getCatalogBundle());
+  const promoProducts = selectPromoProducts(catalog.bundle.products);
 
   const labels = {
     noImage: landingTranslations("products.noImage"),
@@ -28,7 +30,7 @@ export const LandingProducts = async () => {
           <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             {landingTranslations("products.promoTitle")}
           </h2>
-          <p className="mt-3 max-w-3xl text-base leading-[1.5] text-muted-foreground sm:text-lg">
+          <p className="mt-3 max-w-3xl text-base leading-normal text-muted-foreground sm:text-lg">
             {landingTranslations("products.promoLead")}
           </p>
           <Link
@@ -43,9 +45,10 @@ export const LandingProducts = async () => {
             <ScrollReveal
               key={product.id}
               as="li"
+              className="min-w-0"
               delay={productIndex * 0.035}
             >
-              <ProductCard product={product} labels={labels} />
+              <ProductCard product={product} labels={labels} catalog={catalog} />
             </ScrollReveal>
           ))}
         </ul>

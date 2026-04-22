@@ -111,7 +111,7 @@
       "title": "Product catalog",
       "lead": "Demo catalog (motor oils, filters, fluids, spark plugs) — images are placeholders until real photos are connected.",
       "promoTitle": "Promotional items",
-      "promoLead": "Products with promoDiscountPercent in data/catalog.json — same order as in the products array.",
+      "promoLead": "Products with a promo flag — same order as in the database.",
       "viewFullCatalog": "Full catalog",
       "promoBadge": "Sale",
       "noImage": "No product image",
@@ -153,7 +153,7 @@
     "metaTitle": "Catalog",
     "metaDescription": "Shop oils, filters, fluids and spark plugs with filters by brand and price. Clear specs and retail prices — Oilix online store.",
     "title": "Product catalog",
-    "lead": "Full list from data/catalog.json (brands, categories, products). Images are placeholders until photos are connected.",
+    "lead": "Full catalog from the database (brands, categories, products). Product photos show when uploaded in admin; otherwise you see a placeholder.",
     "backHome": "Back to home",
     "explorer": {
       "searchPlaceholder": "Name or article…",

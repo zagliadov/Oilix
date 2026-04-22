@@ -3,8 +3,9 @@
 import { Minus, Plus, ShoppingCart } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { getStoreProductByIdInCatalog } from "@/app/lib/catalog";
 import { useCart } from "@/components/cart/cart-context";
-import { getStoreProductById } from "@/app/lib/catalog";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
   storefrontButtonPrimary,
   storefrontButtonPrimaryPadding,
@@ -22,8 +23,9 @@ export const AddToCartButton = ({
   variant = "primary",
 }: AddToCartButtonProps) => {
   const cartTranslations = useTranslations("Cart");
+  const catalog = useStorefrontCatalog();
   const { lines, addProduct, setLineQuantity, isReady } = useCart();
-  const product = getStoreProductById(productId);
+  const product = getStoreProductByIdInCatalog(productId, catalog);
   const line = lines.find((entry) => entry.productId === productId);
   const quantity = line?.quantity ?? 0;
 

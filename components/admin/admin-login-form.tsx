@@ -21,7 +21,7 @@ export const AdminLoginForm = ({ disabled }: AdminLoginFormProps) => {
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
         <label htmlFor="admin-password" className="block text-sm font-medium text-foreground">
-          Password
+          Пароль
         </label>
         <input
           id="admin-password"
@@ -43,7 +43,7 @@ export const AdminLoginForm = ({ disabled }: AdminLoginFormProps) => {
         disabled={disabled || isPending}
         className={`w-full ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
       >
-        {isPending ? "Signing in…" : "Sign in"}
+        {isPending ? "Вход…" : "Войти"}
       </button>
     </form>
   );

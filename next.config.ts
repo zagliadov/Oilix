@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  // Default is 1MB; admin product image upload allows up to 4MB in the action body.
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "5mb",
+    },
+  },
   // Next 16 narrows allowed `quality` values; keep defaults + custom values we actually use.
   images: {
     qualities: [75, 100],

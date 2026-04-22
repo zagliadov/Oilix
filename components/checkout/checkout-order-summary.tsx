@@ -4,8 +4,13 @@ import * as _ from "lodash";
 import Link from "next/link";
 
 import { formatPriceUah } from "@/app/lib/format-price";
-import { getBrandNameForProduct, getEffectivePriceUah, getStoreProductById } from "@/app/lib/catalog";
+import {
+  getBrandNameForProduct,
+  getEffectivePriceUah,
+  getStoreProductByIdInCatalog,
+} from "@/app/lib/catalog";
 import type { CartLine } from "@/app/lib/cart/cart-types";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
   storefrontHeadingSection,
   storefrontLinkBrand,
@@ -34,8 +39,9 @@ export const CheckoutOrderSummary = ({
   editCartLabel,
   cartHref,
 }: CheckoutOrderSummaryProps) => {
+  const catalog = useStorefrontCatalog();
   const validLines = _.filter(lines, (line) =>
-    Boolean(getStoreProductById(line.productId)),
+    Boolean(getStoreProductByIdInCatalog(line.productId, catalog)),
   );
 
   return (
@@ -48,13 +54,13 @@ export const CheckoutOrderSummary = ({
       </div>
       <ul className="mt-4 max-h-72 list-none space-y-3 overflow-y-auto p-0">
         {_.map(validLines, (line) => {
-          const product = getStoreProductById(line.productId);
+          const product = getStoreProductByIdInCatalog(line.productId, catalog);
           if (!product) {
             return null;
           }
           const unit = getEffectivePriceUah(product);
           const lineTotal = unit * line.quantity;
-          const brand = getBrandNameForProduct(product);
+          const brand = getBrandNameForProduct(product, catalog);
           return (
             <li
               key={line.productId}

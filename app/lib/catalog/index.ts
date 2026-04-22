@@ -3,7 +3,6 @@ export type {
   BrakeFluidDot,
   BrakeFluidProduct,
   Brand,
-  BrandId,
   CategoryId,
   FilterProduct,
   FilterRole,
@@ -19,19 +18,20 @@ export type {
 } from "./types";
 export { ProductKind } from "./types";
 export type { CatalogBundle, CatalogIndexes } from "./bundle";
+export { buildCatalogIndexes } from "./indexes";
 export {
-  catalogIndexes,
-  getBrandById,
+  getBrandByIdInCatalog,
   getBrandNameForProduct,
-  getCategoryById,
-  getPromoProducts,
-  getStoreProductById,
-  storeProducts,
-} from "./bundle";
+  getCategoryByIdInCatalog,
+  getProductCardImageUrlInCatalog,
+  getProductIdParams,
+  getStoreProductByIdInCatalog,
+} from "./catalog-lookups";
 export {
   getDiscountPercent,
   getEffectivePriceUah,
   isPromoProduct,
+  selectPromoProducts,
 } from "./pricing";
 export {
   getProductCardSpecLine,

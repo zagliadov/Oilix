@@ -25,8 +25,9 @@ import {
   hasCheckoutErrors,
   validateCheckoutForm,
 } from "@/app/lib/checkout/validate-checkout-form";
-import { getStoreProductById } from "@/app/lib/catalog";
+import { getStoreProductByIdInCatalog } from "@/app/lib/catalog";
 import { useCart } from "@/components/cart/cart-context";
+import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
   storefrontButtonPrimary,
   storefrontButtonPrimaryPaddingCompact,
@@ -55,6 +56,7 @@ export const CheckoutPageClient = () => {
   const checkoutTranslations = useTranslations("Checkout");
   const landingTranslations = useTranslations("Landing");
   const { lines, isReady, totalPriceUah, clearCart } = useCart();
+  const catalog = useStorefrontCatalog();
 
   const [formValues, setFormValues] = useState<CheckoutFormValues>(defaultCheckoutFormValues);
   const [fieldErrors, setFieldErrors] = useState<
@@ -63,8 +65,11 @@ export const CheckoutPageClient = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
 
   const validLines = useMemo(
-    () => _.filter(lines, (line) => Boolean(getStoreProductById(line.productId))),
-    [lines],
+    () =>
+      _.filter(lines, (line) =>
+        Boolean(getStoreProductByIdInCatalog(line.productId, catalog)),
+      ),
+    [lines, catalog],
   );
 
   useEffect(() => {
@@ -118,7 +123,11 @@ export const CheckoutPageClient = () => {
       return;
     }
 
-    const payload = buildCheckoutSubmitPayload(formValues, validLines);
+    const payload = buildCheckoutSubmitPayload(
+      formValues,
+      validLines,
+      (productId) => getStoreProductByIdInCatalog(productId, catalog) ?? undefined,
+    );
     if (payload === null) {
       return;
     }

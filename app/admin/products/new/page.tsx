@@ -6,7 +6,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { ProductForm } from "@/components/admin/product-form";
 
 export const metadata: Metadata = {
-  title: "New product — Admin — Oilix",
+  title: "Новый товар — Админка — Oilix",
   robots: { index: false, follow: false },
 };
 
@@ -15,9 +15,9 @@ export default async function AdminNewProductPage() {
   const nextId = suggestNextProductId(bundle.products);
 
   return (
-    <AdminShell title="New product">
+    <AdminShell title="Новый товар">
       <p className="text-sm text-muted-foreground">
-        Next id will be <span className="font-mono text-foreground">{nextId}</span> (assigned on save).
+        Id при сохранении: <span className="font-mono text-foreground">{nextId}</span>
       </p>
       <div className="mt-8 w-full">
         <ProductForm

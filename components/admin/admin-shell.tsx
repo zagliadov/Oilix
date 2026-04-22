@@ -18,11 +18,11 @@ export const AdminShell = ({ title, children }: AdminShellProps) => {
         <div>
           <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <Link href="/admin" className="transition hover:text-foreground">
-              Admin
+              Админка
             </Link>
             {" / "}
             <Link href="/admin/products" className="transition hover:text-foreground">
-              Products
+              Товары
             </Link>
           </p>
           <h1 className="font-display mt-2 text-2xl font-bold tracking-tight text-foreground">
@@ -34,7 +34,7 @@ export const AdminShell = ({ title, children }: AdminShellProps) => {
             type="submit"
             className={`${storefrontButtonSecondary} ${storefrontButtonSecondaryPadding} text-sm`}
           >
-            Log out
+            Выйти
           </button>
         </form>
       </header>
