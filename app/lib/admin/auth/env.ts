@@ -1,5 +1,5 @@
 /**
- * Admin auth reads secrets only on the server / edge (middleware).
+ * Admin auth reads secrets only on the server / edge (proxy).
  * Set ADMIN_PASSWORD for login; optionally set ADMIN_SESSION_SECRET for signing cookies separately.
  */
 export const getAdminPassword = (): string | undefined =>

@@ -10,7 +10,7 @@ export const config = {
   matcher: ["/admin/:path*"],
 };
 
-export const middleware = async (request: NextRequest) => {
+export const proxy = async (request: NextRequest) => {
   const { pathname } = request.nextUrl;
 
   if (pathname === LOGIN_PATH) {

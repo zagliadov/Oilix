@@ -1,5 +1,5 @@
 /**
- * HMAC-SHA256 session tokens using Web Crypto (works in Node Server Actions and Edge middleware).
+ * HMAC-SHA256 session tokens using Web Crypto (works in Node Server Actions and Edge proxy).
  */
 
 const MAX_AGE_SECONDS = 8 * 60 * 60;
