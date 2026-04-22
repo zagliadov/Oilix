@@ -44,7 +44,7 @@ export const LandingHero = async () => {
         <div className="mt-10 flex flex-wrap gap-4">
           <NavHashLink
             hash="contact"
-            className={`${storefrontButtonPrimary} ${storefrontButtonPrimaryPadding} shadow-[0_0_40px_-8px_var(--glow)]`}
+            className={`${storefrontButtonPrimary} ${storefrontButtonPrimaryPadding} shadow-cta-glow`}
           >
             {landingTranslations("hero.ctaPrimary")}
           </NavHashLink>

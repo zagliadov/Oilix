@@ -73,6 +73,17 @@
   }
 }
 
+/* Avoid `bg-[…var(--glow)…]` / `shadow-[…var(--glow)…]` in class names — can break minified CSS in production */
+@layer components {
+  .bg-landing-radial-glow {
+    background-image: radial-gradient(ellipse at center, var(--glow), transparent 65%);
+  }
+
+  .shadow-cta-glow {
+    box-shadow: 0 0 40px -8px var(--glow);
+  }
+}
+
 /*
   Type scale (Robot Dreams–style reference):
   - Hero title: ~64–72px / 4–4.5rem, extra-bold display sans
