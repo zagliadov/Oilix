@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* `app/globals.css` is under `app/`: set Tailwind v4 scan root to repo root. Without this,
+   `next build` emits ~11KB CSS and drops almost all utilities (no .flex, grid, spacing). */
+@import "tailwindcss" source("..");
 
 @custom-variant dark (&:where(.dark, .dark *));
 
