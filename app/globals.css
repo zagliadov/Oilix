@@ -56,6 +56,21 @@
   --color-border: var(--border);
   /* Named `brand` — Tailwind reserves `accent-*` for form `accent-color`, not theme colors */
   --color-brand: var(--accent);
+  /* Semantic surfaces — use theme keys instead of `bg-[var(--...)]` (avoids broken CSS in prod minify) */
+  --color-brand-soft: var(--accent-soft);
+  --color-pill-border: var(--pill-border);
+  --color-pill-bg: var(--pill-bg);
+  --color-section: var(--section);
+  --color-section-deep: var(--section-deep);
+  --color-contact-from: var(--contact-from);
+  --color-contact-to: var(--contact-to);
+}
+
+/* Replaces arbitrary `[&::-webkit-details-marker]:hidden` (Lightning CSS can corrupt `::` in class names) */
+@layer base {
+  .summary-no-webkit-marker::-webkit-details-marker {
+    display: none;
+  }
 }
 
 /*

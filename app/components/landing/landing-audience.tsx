@@ -20,7 +20,7 @@ export const LandingAudience = async () => {
     <ScrollReveal
       as="section"
       id="audience"
-      className="w-full border-t border-border bg-[var(--section)] py-20"
+      className="w-full border-t border-border bg-section py-20"
     >
       <SectionShell>
         <h2 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">

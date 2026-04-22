@@ -29,7 +29,7 @@ export const LandingHero = async () => {
           {_.map(heroPills, (pill) => (
             <span
               key={pill}
-              className="rounded-md border border-[var(--pill-border)] bg-[var(--pill-bg)] px-3 py-1.5 text-[0.8125rem] font-medium leading-none text-muted-foreground"
+              className="rounded-md border border-pill-border bg-pill-bg px-3 py-1.5 text-[0.8125rem] font-medium leading-none text-muted-foreground"
             >
               {pill}
             </span>

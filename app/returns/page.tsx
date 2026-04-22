@@ -97,7 +97,7 @@ export default async function ReturnsPage() {
                 </ul>
               </section>
 
-              <p className="mt-10 rounded-md border border-brand/25 bg-[var(--accent-soft)] p-4 text-sm leading-[1.6] text-muted-foreground dark:border-brand/20">
+              <p className="mt-10 rounded-md border border-brand/25 bg-brand-soft p-4 text-sm leading-[1.6] text-muted-foreground dark:border-brand/20">
                 {returnsTranslations("deliveryNote")}
               </p>
 

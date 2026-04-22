@@ -16,7 +16,7 @@ export const LandingContact = async () => {
     <ScrollReveal
       as="section"
       id="contact"
-      className="w-full border-t border-border bg-gradient-to-b from-[var(--contact-from)] to-[var(--contact-to)] py-20"
+      className="w-full border-t border-border bg-gradient-to-b from-contact-from to-contact-to py-20"
     >
       <SectionShell>
         <div className="grid w-full gap-12 lg:grid-cols-2 lg:gap-16">

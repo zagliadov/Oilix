@@ -20,7 +20,7 @@ export const LandingQuality = async () => {
     <ScrollReveal
       as="section"
       id="quality"
-      className="w-full border-t border-border bg-[var(--section-deep)] py-20"
+      className="w-full border-t border-border bg-section-deep py-20"
     >
       <SectionShell>
         <div className="grid w-full gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
@@ -40,7 +40,7 @@ export const LandingQuality = async () => {
               ))}
             </ul>
           </div>
-          <div className="rounded-md border border-brand/25 bg-[var(--accent-soft)] p-6 sm:p-8 dark:border-brand/20">
+          <div className="rounded-md border border-brand/25 bg-brand-soft p-6 sm:p-8 dark:border-brand/20">
             <p className="font-display text-[0.875rem] font-semibold uppercase tracking-wider text-brand">
               {landingTranslations("quality.quoteLabel")}
             </p>

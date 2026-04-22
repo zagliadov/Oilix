@@ -81,7 +81,7 @@ export default async function DeliveryPage() {
               </section>
             </div>
 
-            <p className="mt-10 max-w-3xl rounded-md border border-brand/25 bg-[var(--accent-soft)] p-4 text-sm leading-[1.5] text-muted-foreground dark:border-brand/20">
+            <p className="mt-10 max-w-3xl rounded-md border border-brand/25 bg-brand-soft p-4 text-sm leading-[1.5] text-muted-foreground dark:border-brand/20">
               {deliveryTranslations("note")}
             </p>
 

@@ -35,7 +35,7 @@ export const LandingCatalog = async () => {
               <details
                 className="group rounded-md border border-border bg-muted/30 open:bg-muted/50 dark:bg-white/[0.02] dark:open:bg-white/[0.04]"
               >
-                <summary className="font-display cursor-pointer list-none px-5 py-4 text-base font-semibold text-foreground marker:content-none [&::-webkit-details-marker]:hidden">
+                <summary className="summary-no-webkit-marker font-display cursor-pointer list-none px-5 py-4 text-base font-semibold text-foreground marker:content-none">
                   <span className="flex items-center justify-between gap-4">
                     {block.title}
                     <ChevronDown
