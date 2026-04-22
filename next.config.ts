@@ -13,6 +13,10 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: projectRoot,
   },
+  // Next 16 narrows allowed `quality` values; keep defaults + custom values we actually use.
+  images: {
+    qualities: [75, 100],
+  },
 };
 
 export default withNextIntl(nextConfig);
