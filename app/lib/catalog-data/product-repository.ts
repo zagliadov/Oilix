@@ -1,7 +1,7 @@
 import "server-only";
 
 import { eq, asc } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
 import * as _ from "lodash";
 
 import { buildStoreProductFromRow } from "@/app/lib/catalog/db-mappers";
@@ -14,6 +14,7 @@ import { getDb } from "@/app/lib/db/client";
 import { products } from "@/app/lib/db/schema";
 
 const invalidateCatalog = (): void => {
+  updateTag("catalog");
   revalidateTag("catalog", "default");
 };
 

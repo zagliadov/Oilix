@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { requireAdminSession } from "@/app/lib/admin/auth/require-admin";
+import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { parseProductFromFormData } from "@/app/lib/catalog-data/parse-product-form";
 import {
   createProduct,
@@ -11,7 +12,6 @@ import {
   getProductById,
   updateProduct,
 } from "@/app/lib/catalog-data/product-repository";
-import { readCatalogBundleFromFile } from "@/app/lib/catalog-data/read-catalog-file";
 import { suggestNextProductId } from "@/app/lib/catalog-data/product-ids";
 
 export type ProductFormActionState = {
@@ -26,7 +26,7 @@ export const createProductAction = async (
   formData: FormData,
 ): Promise<ProductFormActionState> => {
   await requireAdminSession();
-  const bundle = await readCatalogBundleFromFile();
+  const bundle = await getCatalogBundle();
   const newId = suggestNextProductId(bundle.products);
   const parsed = parseProductFromFormData(formData, bundle, {
     mode: "create",
@@ -36,8 +36,10 @@ export const createProductAction = async (
     return { ok: false, errors: parsed.errors };
   }
   await createProduct(parsed.product);
+  const createdId = parsed.product.id;
   revalidatePath("/admin/products");
-  redirect("/admin/products");
+  revalidatePath(`/admin/products/${encodeURIComponent(createdId)}/edit`);
+  redirect(`/admin/products/${encodeURIComponent(createdId)}/edit`);
 };
 
 export const updateProductAction = async (
@@ -50,7 +52,7 @@ export const updateProductAction = async (
   if (id === "") {
     return { ok: false, errors: ["Не указан id товара."] };
   }
-  const bundle = await readCatalogBundleFromFile();
+  const bundle = await getCatalogBundle();
   const parsed = parseProductFromFormData(formData, bundle, {
     mode: "edit",
     productId: id,
@@ -68,7 +70,9 @@ export const updateProductAction = async (
   return { ok: true, saved: true };
 };
 
-export const deleteProductAction = async (formData: FormData): Promise<void> => {
+export const deleteProductAction = async (
+  formData: FormData,
+): Promise<void> => {
   await requireAdminSession();
   const idRaw = formData.get("id");
   const id = typeof idRaw === "string" ? idRaw.trim() : "";

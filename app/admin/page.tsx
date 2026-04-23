@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 import { adminLogoutAction } from "@/app/lib/admin/auth/actions";
 import {
@@ -13,12 +14,20 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function AdminHomePage() {
+export default async function AdminHomePage() {
+  const landingTranslations = await getTranslations("Landing");
+
   return (
     <div className="w-full px-4 py-10 sm:px-6 lg:px-8">
       <header className="flex flex-col gap-4 border-b border-border pb-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight text-foreground">
+          <Link
+            href="/"
+            className="font-display inline-block text-lg font-semibold uppercase tracking-tight text-foreground transition hover:opacity-85"
+          >
+            {landingTranslations("brand")}
+          </Link>
+          <h1 className="font-display mt-3 text-2xl font-bold tracking-tight text-foreground">
             Администрирование
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">

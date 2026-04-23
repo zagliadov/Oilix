@@ -1,13 +1,16 @@
 import "server-only";
 
 import { eq, asc, max } from "drizzle-orm";
-import { revalidateTag } from "next/cache";
+import { revalidateTag, updateTag } from "next/cache";
 
 import { logAdminProductImages } from "@/app/lib/debug/log-admin-product-images";
 import { getDb } from "@/app/lib/db/client";
 import { productImages } from "@/app/lib/db/schema";
 
 const invalidateCatalog = (): void => {
+  // `updateTag` (Server Action paths) expires `unstable_cache` immediately; `revalidateTag` alone
+  // can leave stale catalog HTML without fresh `product_images` URLs (cards show placeholders).
+  updateTag("catalog");
   revalidateTag("catalog", "default");
 };
 
