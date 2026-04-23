@@ -68,6 +68,8 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
     Partial<Record<keyof CheckoutFormValues, string>>
   >({});
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formSubmitError, setFormSubmitError] = useState<string | null>(null);
 
   const validLines = useMemo(
     () =>
@@ -99,6 +101,7 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
 
   const handleChange = useCallback(
     <K extends keyof CheckoutFormValues>(field: K, value: CheckoutFormValues[K]) => {
+      setFormSubmitError(null);
       setFormValues((previous) => {
         if (field === "deliveryMethod") {
           const deliveryMethod = value as CheckoutFormValues["deliveryMethod"];
@@ -129,8 +132,9 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
     [],
   );
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setFormSubmitError(null);
     const rawErrors = validateCheckoutForm(formValues, { npApiConfigured });
     if (hasCheckoutErrors(rawErrors)) {
       const next: Partial<Record<keyof CheckoutFormValues, string>> = {};
@@ -155,14 +159,44 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
       return;
     }
 
-    // Future: await fetch("/api/checkout", { method: "POST", body: JSON.stringify(payload), headers: { "Content-Type": "application/json" } });
     if (process.env.NODE_ENV === "development") {
       console.info("[checkout] payload", payload);
     }
 
-    clearCart();
-    setSubmitSuccess(true);
-    setFieldErrors({});
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (response.ok) {
+        clearCart();
+        setSubmitSuccess(true);
+        setFieldErrors({});
+        return;
+      }
+      const errorBody = (await response
+        .json()
+        .catch((): { error?: string } => ({}))) as { error?: string };
+      if (errorBody.error === "email_not_configured") {
+        setFormSubmitError(tr("submitErrorService"));
+        return;
+      }
+      if (errorBody.error === "send_failed") {
+        setFormSubmitError(tr("submitErrorSend"));
+        return;
+      }
+      if (errorBody.error === "invalid_payload") {
+        setFormSubmitError(tr("submitErrorInvalid"));
+        return;
+      }
+      setFormSubmitError(tr("submitErrorInvalid"));
+    } catch {
+      setFormSubmitError(tr("submitErrorNetwork"));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!isReady) {
@@ -384,11 +418,18 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
             />
           </FormField>
 
+          {formSubmitError !== null ? (
+            <p className="text-sm text-amber-800 dark:text-amber-200/90" role="alert">
+              {formSubmitError}
+            </p>
+          ) : null}
+
           <button
             type="submit"
-            className={`w-full sm:w-auto ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
+            disabled={isSubmitting}
+            className={`w-full sm:w-auto ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact} disabled:pointer-events-none disabled:opacity-60`}
           >
-            {tr("submit")}
+            {isSubmitting ? tr("submitSending") : tr("submit")}
           </button>
         </form>
       </div>
