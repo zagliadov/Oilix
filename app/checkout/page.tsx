@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
+import { isNovaPoshtaApiConfigured } from "@/app/lib/nova-poshta/env";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { CheckoutPageClient } from "@/components/checkout/checkout-page-client";
 import { LandingBackground } from "@/app/components/landing/landing-background";
@@ -15,6 +16,7 @@ export const generateMetadata = async () =>
 
 export default async function CheckoutPage() {
   const checkoutTranslations = await getTranslations("Checkout");
+  const npApiConfigured = isNovaPoshtaApiConfigured();
 
   return (
     <div className="relative flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
@@ -45,7 +47,7 @@ export default async function CheckoutPage() {
                 </p>
               </header>
 
-              <CheckoutPageClient />
+              <CheckoutPageClient npApiConfigured={npApiConfigured} />
             </div>
           </SectionShell>
         </main>

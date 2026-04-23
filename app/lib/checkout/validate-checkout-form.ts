@@ -15,11 +15,16 @@ export type CheckoutFieldErrors = Partial<
   Record<CheckoutValidationKey, string>
 >;
 
+export type CheckoutValidationOptions = {
+  npApiConfigured: boolean;
+};
+
 /**
  * Pure validation — returns error message **keys** relative to `Checkout.validation.*` in messages.
  */
 export const validateCheckoutForm = (
   values: CheckoutFormValues,
+  options: CheckoutValidationOptions,
 ): CheckoutFieldErrors => {
   const errors: CheckoutFieldErrors = {};
 
@@ -52,6 +57,19 @@ export const validateCheckoutForm = (
 
   if (values.comment.length > 2000) {
     errors.comment = "commentMax";
+  }
+
+  if (values.deliveryMethod === "nova_poshta") {
+    if (options.npApiConfigured) {
+      if (values.npCityRef.trim() === "") {
+        errors.npCityRef = "npCityRequired";
+      }
+      if (values.npWarehouseRef.trim() === "") {
+        errors.npWarehouseRef = "npWarehouseRequired";
+      }
+    } else if (values.npBranchManual.trim().length < 3) {
+      errors.npBranchManual = "npBranchManualMin";
+    }
   }
 
   return errors;

@@ -7,15 +7,21 @@ import type { StoreProduct } from "@/app/lib/catalog/types/product";
 import type {
   CheckoutFormValues,
   CheckoutPayloadLine,
+  CheckoutNovaPoshtaDetails,
   CheckoutSubmitPayload,
 } from "./types";
 
 type ProductResolver = (productId: string) => StoreProduct | undefined;
 
+type BuildCheckoutOptions = {
+  npApiConfigured: boolean;
+};
+
 export const buildCheckoutSubmitPayload = (
   formValues: CheckoutFormValues,
   cartLines: readonly CartLine[],
   getProduct: ProductResolver,
+  options: BuildCheckoutOptions,
 ): CheckoutSubmitPayload | null => {
   if (
     formValues.deliveryMethod === "" ||
@@ -47,6 +53,24 @@ export const buildCheckoutSubmitPayload = (
 
   const comment = formValues.comment.trim();
 
+  let novaPoshta: CheckoutNovaPoshtaDetails | undefined;
+  if (formValues.deliveryMethod === "nova_poshta") {
+    if (options.npApiConfigured) {
+      novaPoshta = {
+        source: "api",
+        cityRef: formValues.npCityRef.trim(),
+        cityName: formValues.npCityName.trim(),
+        warehouseRef: formValues.npWarehouseRef.trim(),
+        warehouseName: formValues.npWarehouseName.trim(),
+      };
+    } else {
+      novaPoshta = {
+        source: "manual",
+        branchDescription: formValues.npBranchManual.trim(),
+      };
+    }
+  }
+
   return {
     customer: {
       name: formValues.customerName.trim(),
@@ -61,5 +85,6 @@ export const buildCheckoutSubmitPayload = (
     totalUah,
     clientSubmittedAt: new Date().toISOString(),
     cartLines: [...cartLines],
+    ...(novaPoshta !== undefined ? { novaPoshta } : {}),
   };
 };

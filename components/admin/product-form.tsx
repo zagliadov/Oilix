@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Link from "next/link";
 import { useActionState, useState } from "react";
 
@@ -10,6 +11,7 @@ import {
 } from "@/app/lib/admin/products/product-actions";
 import { ProductKind } from "@/app/lib/catalog/types/product";
 import type { StoreProduct } from "@/app/lib/catalog/types/product";
+import { ProductImageUploadBlock } from "@/components/admin/product-image-upload-block";
 import { renderProductKindFieldBlock } from "@/components/admin/product-form-kind-blocks";
 import {
   storefrontButtonPrimary,
@@ -17,6 +19,88 @@ import {
   storefrontButtonSecondary,
   storefrontButtonSecondaryPadding,
 } from "@/components/ui/storefront";
+
+import { appleEase } from "@/components/motion/apple-ease";
+
+type CreateInlinePhotoPanelProps = {
+  createdProductId: string;
+  blobConfigured: boolean;
+  prefersReducedMotion: boolean;
+};
+
+const CreateInlinePhotoPanel = ({
+  createdProductId,
+  blobConfigured,
+  prefersReducedMotion,
+}: CreateInlinePhotoPanelProps) => {
+  const instant = prefersReducedMotion;
+  const listVariants = {
+    hidden: { opacity: instant ? 1 : 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: instant ? 0 : 0.1, delayChildren: instant ? 0 : 0.05 },
+    },
+  } as const;
+  const itemVariants = {
+    hidden: instant
+      ? { opacity: 1, y: 0 }
+      : { opacity: 0, y: 12 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: instant ? 0 : 0.4, ease: appleEase },
+    },
+  } as const;
+
+  return (
+    <motion.div
+      className="space-y-10"
+      variants={listVariants}
+      initial="hidden"
+      animate="show"
+      exit="hidden"
+    >
+      <motion.div variants={itemVariants}>
+        <div
+          className="rounded-md border border-emerald-500/35 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200/95"
+          role="status"
+        >
+          Товар создан. Id:{" "}
+          <span className="font-mono text-foreground">{createdProductId}</span>
+        </div>
+      </motion.div>
+      <motion.section variants={itemVariants} className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight text-foreground">Фото товара</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Файлы хранятся в Vercel Blob; при новой загрузке предыдущее фото заменяется (одно фото на
+            товар).
+          </p>
+        </div>
+        <ProductImageUploadBlock
+          key={createdProductId}
+          productId={createdProductId}
+          blobConfigured={blobConfigured}
+          images={[]}
+        />
+      </motion.section>
+      <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
+        <Link
+          href={`/admin/products/${encodeURIComponent(createdProductId)}/edit`}
+          className={`inline-flex items-center justify-center ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact} text-sm`}
+        >
+          Полное редактирование
+        </Link>
+        <Link
+          href="/admin/products"
+          className={`inline-flex items-center justify-center ${storefrontButtonSecondary} ${storefrontButtonSecondaryPadding} text-sm`}
+        >
+          К списку товаров
+        </Link>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 type BrandOption = { id: string; name: string };
 type CategoryOption = { id: string; name: string };
@@ -42,6 +126,14 @@ type ProductFormProps = {
   brands: readonly BrandOption[];
   categories: readonly CategoryOption[];
   initialProduct?: StoreProduct;
+  /**
+   * `inline-photo`: after successful create, stay on this page and show image upload (needs `blobConfigured`).
+   * Omitted or `redirect-edit`: server redirects to the edit page (default).
+   */
+  createSuccessFlow?: "redirect-edit" | "inline-photo";
+  blobConfigured?: boolean;
+  /** Hint: next id from a fresh DB read; hidden after create when `createdProductId` is in state. */
+  suggestedNextId?: string;
 };
 
 export const ProductForm = ({
@@ -49,6 +141,9 @@ export const ProductForm = ({
   brands,
   categories,
   initialProduct,
+  createSuccessFlow = "redirect-edit",
+  blobConfigured = false,
+  suggestedNextId,
 }: ProductFormProps) => {
   const initialKind = initialProduct?.kind ?? ProductKind.MotorOil;
   const [kind, setKind] = useState<ProductKind>(initialKind);
@@ -58,9 +153,24 @@ export const ProductForm = ({
     action,
     initialFormState,
   );
+  const prefersReducedMotion = useReducedMotion() === true;
 
-  return (
-    <form action={formAction} className="space-y-8">
+  const createdProductId =
+    mode === "create" && state.createdProductId !== undefined
+      ? state.createdProductId
+      : undefined;
+
+  const formChildren = (
+    <>
+      {mode === "create" && suggestedNextId !== undefined && suggestedNextId.length > 0 ? (
+        <p className="text-sm text-muted-foreground">
+          Ожидаемый id при сохранении:{" "}
+          <span className="font-mono text-foreground">{suggestedNextId}</span>
+        </p>
+      ) : null}
+      {mode === "create" && createSuccessFlow === "inline-photo" ? (
+        <input type="hidden" name="afterCreate" value="inline" />
+      ) : null}
       {mode === "edit" && initialProduct !== undefined ? (
         <input type="hidden" name="id" value={initialProduct.id} />
       ) : null}
@@ -289,6 +399,37 @@ export const ProductForm = ({
           Отмена
         </Link>
       </div>
-    </form>
+    </>
   );
+
+  if (mode === "create" && createSuccessFlow === "inline-photo") {
+    return (
+      <AnimatePresence mode="wait" initial={false}>
+        {createdProductId !== undefined && createdProductId !== "" ? (
+          <CreateInlinePhotoPanel
+            key="create-inline-photo"
+            createdProductId={createdProductId}
+            blobConfigured={blobConfigured}
+            prefersReducedMotion={prefersReducedMotion}
+          />
+        ) : (
+          <motion.form
+            key="create-product-fields"
+            action={formAction}
+            className="space-y-8"
+            initial={false}
+            exit={prefersReducedMotion ? undefined : { opacity: 0, y: -10 }}
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.3,
+              ease: appleEase,
+            }}
+          >
+            {formChildren}
+          </motion.form>
+        )}
+      </AnimatePresence>
+    );
+  }
+
+  return <form action={formAction} className="space-y-8">{formChildren}</form>;
 };

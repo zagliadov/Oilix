@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 
 import { requireAdminSession } from "@/app/lib/admin/auth/require-admin";
 import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
+import { loadCatalogFromDatabase } from "@/app/lib/catalog/load-catalog-from-db";
 import { parseProductFromFormData } from "@/app/lib/catalog-data/parse-product-form";
 import {
   createProduct,
@@ -19,6 +20,8 @@ export type ProductFormActionState = {
   errors?: string[];
   /** Set after a successful update in edit mode (stays on the same page). */
   saved?: boolean;
+  /** Set after create when `afterCreate=inline` — show image upload on the new-product page. */
+  createdProductId?: string;
 };
 
 export const createProductAction = async (
@@ -26,7 +29,8 @@ export const createProductAction = async (
   formData: FormData,
 ): Promise<ProductFormActionState> => {
   await requireAdminSession();
-  const bundle = await getCatalogBundle();
+  // Fresh read so `suggestNextProductId` matches the DB; avoids `unstable_cache` skew on create.
+  const bundle = await loadCatalogFromDatabase();
   const newId = suggestNextProductId(bundle.products);
   const parsed = parseProductFromFormData(formData, bundle, {
     mode: "create",
@@ -38,7 +42,14 @@ export const createProductAction = async (
   await createProduct(parsed.product);
   const createdId = parsed.product.id;
   revalidatePath("/admin/products");
+  revalidatePath("/admin/products/new");
   revalidatePath(`/admin/products/${encodeURIComponent(createdId)}/edit`);
+  const afterCreateRaw = formData.get("afterCreate");
+  const afterCreate =
+    typeof afterCreateRaw === "string" ? afterCreateRaw.trim() : "";
+  if (afterCreate === "inline") {
+    return { ok: true, createdProductId: createdId };
+  }
   redirect(`/admin/products/${encodeURIComponent(createdId)}/edit`);
 };
 

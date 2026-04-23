@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
+import { unstable_noStore } from "next/cache";
 
-import { readCatalogBundleFromFile } from "@/app/lib/catalog-data/read-catalog-file";
+import { isBlobStorageConfigured } from "@/app/lib/blob";
+import { loadCatalogFromDatabase } from "@/app/lib/catalog/load-catalog-from-db";
 import { suggestNextProductId } from "@/app/lib/catalog-data/product-ids";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { ProductForm } from "@/components/admin/product-form";
@@ -11,17 +13,19 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminNewProductPage() {
-  const bundle = await readCatalogBundleFromFile();
-  const nextId = suggestNextProductId(bundle.products);
+  unstable_noStore();
+  const bundle = await loadCatalogFromDatabase();
+  const suggestedNextId = suggestNextProductId(bundle.products);
+  const blobConfigured = isBlobStorageConfigured();
 
   return (
     <AdminShell title="Новый товар">
-      <p className="text-sm text-muted-foreground">
-        Id при сохранении: <span className="font-mono text-foreground">{nextId}</span>
-      </p>
-      <div className="mt-8 w-full">
+      <div className="mt-2 w-full">
         <ProductForm
           mode="create"
+          createSuccessFlow="inline-photo"
+          blobConfigured={blobConfigured}
+          suggestedNextId={suggestedNextId}
           brands={bundle.brands.map((brand) => ({ id: brand.id, name: brand.name }))}
           categories={bundle.categories.map((category) => ({
             id: category.id,

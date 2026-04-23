@@ -14,6 +14,13 @@ export type CheckoutFormValues = {
   deliveryMethod: CheckoutDeliveryMethod | "";
   paymentMethod: CheckoutPaymentMethod | "";
   comment: string;
+  /** Nova Poshta — API (when `NPAPI` is set) */
+  npCityRef: string;
+  npCityName: string;
+  npWarehouseRef: string;
+  npWarehouseName: string;
+  /** Nova Poshta — without API: free-text branch / address */
+  npBranchManual: string;
 };
 
 export const defaultCheckoutFormValues = (): CheckoutFormValues => ({
@@ -24,6 +31,11 @@ export const defaultCheckoutFormValues = (): CheckoutFormValues => ({
   deliveryMethod: "",
   paymentMethod: "",
   comment: "",
+  npCityRef: "",
+  npCityName: "",
+  npWarehouseRef: "",
+  npWarehouseName: "",
+  npBranchManual: "",
 });
 
 /** Resolved line for ERP / API payload. */
@@ -38,6 +50,16 @@ export type CheckoutPayloadLine = {
  * Payload ready for POST /orders (or email CRM).
  * Keep field names stable when wiring the API.
  */
+export type CheckoutNovaPoshtaDetails =
+  | {
+      source: "api";
+      cityRef: string;
+      cityName: string;
+      warehouseRef: string;
+      warehouseName: string;
+    }
+  | { source: "manual"; branchDescription: string };
+
 export type CheckoutSubmitPayload = {
   customer: {
     name: string;
@@ -54,4 +76,6 @@ export type CheckoutSubmitPayload = {
   clientSubmittedAt: string;
   /** Snapshot of raw cart lines for reconciliation */
   cartLines: CartLine[];
+  /** Filled when delivery is Nova Poshta */
+  novaPoshta?: CheckoutNovaPoshtaDetails;
 };

@@ -12,8 +12,9 @@ import {
 } from "react";
 import { useTranslations } from "next-intl";
 
-import { FormField, formInputClassName } from "@/components/forms/form-field";
+import { CheckoutNovaPoshtaBlock } from "@/components/checkout/checkout-nova-poshta-block";
 import { CheckoutOrderSummary } from "@/components/checkout/checkout-order-summary";
+import { FormField, formInputClassName } from "@/components/forms/form-field";
 import { buildCheckoutSubmitPayload } from "@/app/lib/checkout/build-checkout-payload";
 import {
   defaultCheckoutFormValues,
@@ -51,14 +52,18 @@ const paymentSelectValues: readonly CheckoutPaymentMethod[] = [
   "bank_transfer",
 ];
 
-export const CheckoutPageClient = () => {
+type CheckoutPageClientProps = {
+  npApiConfigured: boolean;
+};
+
+export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps) => {
   const router = useRouter();
   const checkoutTranslations = useTranslations("Checkout");
   const landingTranslations = useTranslations("Landing");
   const { lines, isReady, totalPriceUah, clearCart } = useCart();
   const catalog = useStorefrontCatalog();
 
-  const [formValues, setFormValues] = useState<CheckoutFormValues>(defaultCheckoutFormValues);
+  const [formValues, setFormValues] = useState<CheckoutFormValues>(defaultCheckoutFormValues());
   const [fieldErrors, setFieldErrors] = useState<
     Partial<Record<keyof CheckoutFormValues, string>>
   >({});
@@ -94,7 +99,24 @@ export const CheckoutPageClient = () => {
 
   const handleChange = useCallback(
     <K extends keyof CheckoutFormValues>(field: K, value: CheckoutFormValues[K]) => {
-      setFormValues((previous) => ({ ...previous, [field]: value }));
+      setFormValues((previous) => {
+        if (field === "deliveryMethod") {
+          const deliveryMethod = value as CheckoutFormValues["deliveryMethod"];
+          if (deliveryMethod !== "nova_poshta") {
+            return {
+              ...previous,
+              deliveryMethod,
+              npCityRef: "",
+              npCityName: "",
+              npWarehouseRef: "",
+              npWarehouseName: "",
+              npBranchManual: "",
+            };
+          }
+          return { ...previous, deliveryMethod };
+        }
+        return { ...previous, [field]: value };
+      });
       setFieldErrors((previous) => {
         if (previous[field] === undefined) {
           return previous;
@@ -109,7 +131,7 @@ export const CheckoutPageClient = () => {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const rawErrors = validateCheckoutForm(formValues);
+    const rawErrors = validateCheckoutForm(formValues, { npApiConfigured });
     if (hasCheckoutErrors(rawErrors)) {
       const next: Partial<Record<keyof CheckoutFormValues, string>> = {};
       (Object.keys(rawErrors) as (keyof CheckoutFormValues)[]).forEach((key) => {
@@ -127,6 +149,7 @@ export const CheckoutPageClient = () => {
       formValues,
       validLines,
       (productId) => getStoreProductByIdInCatalog(productId, catalog) ?? undefined,
+      { npApiConfigured },
     );
     if (payload === null) {
       return;
@@ -304,6 +327,15 @@ export const CheckoutPageClient = () => {
               ))}
             </select>
           </FormField>
+
+          {formValues.deliveryMethod === "nova_poshta" ? (
+            <CheckoutNovaPoshtaBlock
+              formValues={formValues}
+              fieldErrors={fieldErrors}
+              isNpApiConfigured={npApiConfigured}
+              onFieldChange={handleChange}
+            />
+          ) : null}
 
           <FormField
             id="checkout-payment"

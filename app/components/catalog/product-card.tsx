@@ -38,51 +38,67 @@ export const ProductCard = ({ product, labels, catalog }: ProductCardProps) => {
   const effectivePriceUah = getEffectivePriceUah(product);
   const brandName = getBrandNameForProduct(product, catalog);
   const specLine = getProductCardSpecLine(product, labels);
-  const ariaLabel = `${labels.viewProduct}: ${brandName} ${product.name}`;
+  const nameTrimmed = product.name?.trim() ?? "";
+  const productTitle = nameTrimmed !== "" ? nameTrimmed : product.id;
+  const brandNameTrimmed = brandName?.trim() ?? "";
+  const brandLine =
+    brandNameTrimmed !== "" ? brandNameTrimmed : product.brandId;
+  const ariaLabel = `${labels?.viewProduct ?? ""}: ${brandLine} ${productTitle}`
+    .replace(/\s+/g, " ")
+    .trim();
   const cardImageUrl = getProductCardImageUrlInCatalog(product.id, catalog);
+  const altText = [brandLine, productTitle]
+    .filter((part) => part.length > 0)
+    .join(" ");
 
   return (
-    <article className={`flex h-full w-full min-w-0 flex-col ${storefrontProductCard}`}>
+    <article
+      className={`flex h-full w-full min-w-0 flex-col ${storefrontProductCard}`}
+    >
       <Link
-        href={`/product/${product.id}`}
+        href={`/product/${encodeURIComponent(product.id)}`}
         className="group flex flex-1 flex-col p-4 pb-3 no-underline outline-none transition focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label={ariaLabel}
       >
         <div className="relative w-full min-w-0">
           <ProductCatalogImage
             imageUrl={cardImageUrl}
-            alt={`${brandName} ${product.name}`}
-            noImageLabel={labels.noImage}
+            alt={altText}
+            noImageLabel={labels?.noImage ?? ""}
             aspectClassName="aspect-[3/4]"
             imageClassName="p-2 sm:p-3"
           />
-          {discountPercent !== null ? (
-            <span className={`absolute left-2 top-2 ${storefrontBadgePromoSolid}`}>
-              −{discountPercent}% · {labels.promoBadge}
+          {discountPercent != null ? (
+            <span
+              className={`absolute left-2 top-2 ${storefrontBadgePromoSolid}`}
+            >
+              −{discountPercent}% · {labels?.promoBadge ?? ""}
             </span>
           ) : null}
         </div>
         <div className="mt-4 flex flex-1 flex-col">
           <p className="text-[0.6875rem] font-semibold uppercase tracking-wider text-muted-foreground">
-            {brandName}
+            {brandLine}
           </p>
           <h3 className="font-display mt-1 text-base font-semibold leading-snug text-foreground group-hover:text-brand">
-            {product.name}
+            {productTitle}
           </h3>
           <p className="mt-2 text-sm text-muted-foreground">{specLine}</p>
           <div className="mt-auto pt-4">
-            {discountPercent !== null ? (
+            {discountPercent != null ? (
               <p className="text-sm text-muted-foreground line-through tabular-nums">
-                {formatPriceUah(product.priceUah)} {labels.currency}
+                {formatPriceUah(product.priceUah)} {labels?.currency ?? ""}
               </p>
             ) : null}
             <p className="text-lg font-semibold tabular-nums text-foreground">
-              {formatPriceUah(effectivePriceUah)} {labels.currency}
+              {formatPriceUah(effectivePriceUah)} {labels?.currency ?? ""}
             </p>
           </div>
         </div>
       </Link>
-      <div className={`flex items-center justify-end px-3 py-2 ${storefrontDividerTop}`}>
+      <div
+        className={`flex items-center justify-end px-3 py-2 ${storefrontDividerTop}`}
+      >
         <CatalogCartIconButton productId={product.id} />
       </div>
     </article>

@@ -1,3 +1,5 @@
+import * as _ from "lodash";
+
 import {
   ProductKind,
   type BrakeFluidDot,
@@ -12,141 +14,202 @@ type BrandRow = typeof brands.$inferSelect;
 type CategoryRow = typeof categories.$inferSelect;
 type ProductRow = typeof products.$inferSelect;
 
+const PRODUCT_KIND_STRINGS = _.values(ProductKind) as string[];
+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
+  _.isPlainObject(value);
 
-const getNumber = (obj: Record<string, unknown>, key: string): number | undefined => {
-  const v = obj[key];
-  return typeof v === "number" && !Number.isNaN(v) ? v : undefined;
-};
-
-const getString = (obj: Record<string, unknown>, key: string): string | undefined => {
-  const v = obj[key];
-  return typeof v === "string" ? v : undefined;
-};
-
-export const buildStoreProductFromRow = (row: ProductRow): StoreProduct | null => {
-  const d = isRecord(row.details) ? row.details : null;
-  if (d === null) {
-    return null;
+const getNumber = (
+  obj: Record<string, unknown>,
+  key: string,
+): number | undefined => {
+  const value = obj[key];
+  if (_.isNumber(value) && !Number.isNaN(value)) {
+    return value;
   }
-  const base = {
-    id: row.id,
-    brandId: row.brandId,
-    categoryId: row.categoryId,
-    name: row.name,
-    inStock: row.inStock,
-    priceUah: row.priceUah,
+  return undefined;
+};
+
+const getString = (
+  obj: Record<string, unknown>,
+  key: string,
+): string | undefined => {
+  const value = obj[key];
+  if (_.isString(value)) {
+    return value;
+  }
+  return undefined;
+};
+
+const isProductKind = (value: string): value is ProductKind =>
+  _.includes(PRODUCT_KIND_STRINGS, value);
+
+const buildBaseFields = (row: ProductRow) => {
+  const fromRow = _.pick(row, [
+    "id",
+    "brandId",
+    "categoryId",
+    "name",
+    "inStock",
+    "priceUah",
+  ]);
+  return _.assign({}, fromRow, {
     article: row.article ?? undefined,
     description: row.description ?? undefined,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
     promoDiscountPercent:
-      row.promoDiscountPercent === null
-        ? undefined
-        : row.promoDiscountPercent,
-  } as const;
-  const kind = row.kind;
-  if (kind === ProductKind.MotorOil) {
-    return {
-      ...base,
-      kind: ProductKind.MotorOil,
-      viscosity: getString(d, "viscosity") ?? "",
-      volumeLiters: getNumber(d, "volumeLiters") ?? 0,
-    };
-  }
-  if (kind === ProductKind.Filter) {
-    return {
-      ...base,
-      kind: ProductKind.Filter,
-      filterRole: (getString(d, "filterRole") ?? "oil") as FilterRole,
-      partNumber: getString(d, "partNumber"),
-    };
-  }
-  if (kind === ProductKind.Antifreeze) {
-    return {
-      ...base,
-      kind: ProductKind.Antifreeze,
-      volumeLiters: getNumber(d, "volumeLiters") ?? 0,
-      freezePointC: getNumber(d, "freezePointC") ?? 0,
-      specification: getString(d, "specification"),
-    };
-  }
-  if (kind === ProductKind.BrakeFluid) {
-    return {
-      ...base,
-      kind: ProductKind.BrakeFluid,
-      volumeLiters: getNumber(d, "volumeLiters") ?? 0,
-      dot: (getString(d, "dot") ?? "DOT4") as BrakeFluidDot,
-    };
-  }
-  if (kind === ProductKind.SparkPlug) {
-    return {
-      ...base,
-      kind: ProductKind.SparkPlug,
-      thread: getString(d, "thread") ?? "",
-      electrode: getString(d, "electrode"),
-      heatRange: getString(d, "heatRange"),
-    };
-  }
-  if (kind === ProductKind.OtherConsumable) {
-    return {
-      ...base,
-      kind: ProductKind.OtherConsumable,
-      summary: getString(d, "summary") ?? "",
-    };
-  }
-  return null;
+      row.promoDiscountPercent === null ? undefined : row.promoDiscountPercent,
+  });
 };
 
-export const extractDetailsForKind = (product: StoreProduct): Record<string, unknown> => {
-  switch (product.kind) {
-    case ProductKind.MotorOil:
-      return { viscosity: product.viscosity, volumeLiters: product.volumeLiters };
-    case ProductKind.Filter: {
-      return {
-        filterRole: product.filterRole,
-        ...(product.partNumber !== undefined
-          ? { partNumber: product.partNumber }
-          : {}),
-      };
-    }
-    case ProductKind.Antifreeze: {
-      return {
-        volumeLiters: product.volumeLiters,
-        freezePointC: product.freezePointC,
-        ...(product.specification !== undefined
-          ? { specification: product.specification }
-          : {}),
-      };
-    }
-    case ProductKind.BrakeFluid: {
-      return { volumeLiters: product.volumeLiters, dot: product.dot };
-    }
-    case ProductKind.SparkPlug: {
-      return {
-        thread: product.thread,
-        ...(product.electrode !== undefined
-          ? { electrode: product.electrode }
-          : {}),
-        ...(product.heatRange !== undefined
-          ? { heatRange: product.heatRange }
-          : {}),
-      };
-    }
-    case ProductKind.OtherConsumable: {
-      return { summary: product.summary };
-    }
-    default: {
-      const _x: never = product;
-      return _x;
-    }
+type ProductBaseFields = ReturnType<typeof buildBaseFields>;
+
+type FromDetailsBuilder = (
+  details: Record<string, unknown>,
+  base: ProductBaseFields,
+) => StoreProduct;
+
+const storeProductFromRowByKind: Record<ProductKind, FromDetailsBuilder> = {
+  [ProductKind.MotorOil]: (details, base) => ({
+    ...base,
+    kind: ProductKind.MotorOil,
+    viscosity: getString(details, "viscosity") ?? "",
+    volumeLiters: getNumber(details, "volumeLiters") ?? 0,
+  }),
+  [ProductKind.Filter]: (details, base) => ({
+    ...base,
+    kind: ProductKind.Filter,
+    filterRole: (getString(details, "filterRole") ?? "oil") as FilterRole,
+    partNumber: getString(details, "partNumber"),
+  }),
+  [ProductKind.Antifreeze]: (details, base) => ({
+    ...base,
+    kind: ProductKind.Antifreeze,
+    volumeLiters: getNumber(details, "volumeLiters") ?? 0,
+    freezePointC: getNumber(details, "freezePointC") ?? 0,
+    specification: getString(details, "specification"),
+  }),
+  [ProductKind.BrakeFluid]: (details, base) => ({
+    ...base,
+    kind: ProductKind.BrakeFluid,
+    volumeLiters: getNumber(details, "volumeLiters") ?? 0,
+    dot: (getString(details, "dot") ?? "DOT4") as BrakeFluidDot,
+  }),
+  [ProductKind.SparkPlug]: (details, base) => ({
+    ...base,
+    kind: ProductKind.SparkPlug,
+    thread: getString(details, "thread") ?? "",
+    electrode: getString(details, "electrode"),
+    heatRange: getString(details, "heatRange"),
+  }),
+  [ProductKind.OtherConsumable]: (details, base) => ({
+    ...base,
+    kind: ProductKind.OtherConsumable,
+    summary: getString(details, "summary") ?? "",
+  }),
+};
+
+export const buildStoreProductFromRow = (
+  row: ProductRow,
+): StoreProduct | null => {
+  const details = isRecord(row.details) ? row.details : null;
+  if (details === null) {
+    return null;
   }
+  if (!isProductKind(row.kind)) {
+    return null;
+  }
+  const base = buildBaseFields(row);
+  return storeProductFromRowByKind[row.kind](details, base);
+};
+
+type DetailsForKindExtractor = (
+  product: StoreProduct,
+) => Record<string, unknown>;
+
+const pickDefined = <T extends object>(value: T): Record<string, unknown> => {
+  return _.omitBy(value, (fieldValue) => _.isUndefined(fieldValue)) as Record<
+    string,
+    unknown
+  >;
+};
+
+const extractDetailsForKindByKind: Record<
+  ProductKind,
+  DetailsForKindExtractor
+> = {
+  [ProductKind.MotorOil]: (product) => {
+    const motorOil = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.MotorOil }
+    >;
+    return {
+      viscosity: motorOil.viscosity,
+      volumeLiters: motorOil.volumeLiters,
+    };
+  },
+  [ProductKind.Filter]: (product) => {
+    const filter = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.Filter }
+    >;
+    return pickDefined({
+      filterRole: filter.filterRole,
+      partNumber: filter.partNumber,
+    });
+  },
+  [ProductKind.Antifreeze]: (product) => {
+    const antifreeze = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.Antifreeze }
+    >;
+    return pickDefined({
+      volumeLiters: antifreeze.volumeLiters,
+      freezePointC: antifreeze.freezePointC,
+      specification: antifreeze.specification,
+    });
+  },
+  [ProductKind.BrakeFluid]: (product) => {
+    const brake = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.BrakeFluid }
+    >;
+    return { volumeLiters: brake.volumeLiters, dot: brake.dot };
+  },
+  [ProductKind.SparkPlug]: (product) => {
+    const plug = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.SparkPlug }
+    >;
+    return pickDefined({
+      thread: plug.thread,
+      electrode: plug.electrode,
+      heatRange: plug.heatRange,
+    });
+  },
+  [ProductKind.OtherConsumable]: (product) => {
+    const other = product as Extract<
+      StoreProduct,
+      { kind: ProductKind.OtherConsumable }
+    >;
+    return { summary: other.summary };
+  },
+};
+
+export const extractDetailsForKind = (
+  product: StoreProduct,
+): Record<string, unknown> => {
+  return extractDetailsForKindByKind[product.kind](product);
 };
 
 export const mapBrands = (rows: readonly BrandRow[]) =>
-  rows.map((row) => ({ id: row.id, slug: row.slug, name: row.name }));
+  _.map(rows, (row) => _.pick(row, ["id", "slug", "name"]));
 
-export const mapCategories = (rows: readonly CategoryRow[]): ProductCategory[] =>
-  rows.map((row) => ({
+export const mapCategories = (
+  rows: readonly CategoryRow[],
+): ProductCategory[] =>
+  _.map(rows, (row) => ({
     id: row.id,
     slug: row.slug,
     name: row.name,

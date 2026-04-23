@@ -25,6 +25,10 @@ type BaseStoreProduct = {
   article?: string;
   /** Short marketing / SEO body for product page (mock; future: CMS per locale). */
   description?: string;
+  /** ISO 8601, set when the product row is loaded from Postgres. */
+  createdAt?: string;
+  /** ISO 8601, set when the product row is loaded from Postgres. */
+  updatedAt?: string;
 } & PricedLine;
 
 export type MotorOilProduct = BaseStoreProduct & {
