@@ -1,19 +1,31 @@
 "use client";
 
-import { useActionState, useEffect, useId, useMemo, useState } from "react";
+import {
+  useActionState,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
 import { useRouter } from "next/navigation";
 
 import {
+  type ProductImageDeleteState,
   type ProductImageUploadState,
+  deleteProductImageAction,
   uploadProductImageAction,
 } from "@/app/lib/admin/products/product-image-actions";
 import {
   storefrontButtonPrimary,
   storefrontButtonPrimaryPaddingCompact,
   storefrontButtonSecondary,
+  storefrontButtonSecondaryPadding,
 } from "@/components/ui/storefront";
 
 const initial: ProductImageUploadState = { ok: true };
+
+const initialDelete: ProductImageDeleteState = { ok: true };
 
 const textInputClass =
   "w-full rounded-md border border-border bg-background px-3 py-2.5 text-base text-foreground outline-none focus-visible:border-brand/40 focus-visible:ring-2 focus-visible:ring-brand/25 dark:border-white/12 dark:bg-white/3";
@@ -58,9 +70,19 @@ export const ProductImageUploadBlock = ({
     uploadProductImageAction,
     initial,
   );
+  const [deleteState, deleteFormAction, isDeletePending] = useActionState(
+    deleteProductImageAction,
+    initialDelete,
+  );
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const fileInputId = useId();
   const altInputId = useId();
+  const deleteDialogTitleId = useId();
+
+  const onCloseDeleteDialog = useCallback(() => {
+    setIsDeleteDialogOpen(false);
+  }, []);
   const chooseFileButtonClass =
     `${storefrontButtonSecondary} shrink-0 cursor-pointer rounded-md border px-3.5 py-2 text-sm font-medium ` +
     "disabled:cursor-not-allowed disabled:opacity-60";
@@ -70,6 +92,39 @@ export const ProductImageUploadBlock = ({
       router.refresh();
     }
   }, [state.uploaded, router]);
+
+  useEffect(() => {
+    if (deleteState.deleted === true) {
+      setIsDeleteDialogOpen(false);
+      router.refresh();
+    }
+  }, [deleteState.deleted, router]);
+
+  useEffect(() => {
+    if (!isDeleteDialogOpen) {
+      return;
+    }
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        onCloseDeleteDialog();
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [isDeleteDialogOpen, onCloseDeleteDialog]);
+
+  useEffect(() => {
+    if (!isDeleteDialogOpen) {
+      return;
+    }
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isDeleteDialogOpen]);
 
   const displayImages = useMemo(() => {
     if (images.length > 0) {
@@ -125,6 +180,74 @@ export const ProductImageUploadBlock = ({
           Для этого товара ещё нет фото. После загрузки превью появится здесь.
         </p>
       )}
+
+      {displayImages.length > 0 ? (
+        <button
+          type="button"
+          disabled={isDeletePending || isPending}
+          onClick={() => {
+            setIsDeleteDialogOpen(true);
+          }}
+          className={
+            `${storefrontButtonSecondary} ${storefrontButtonSecondaryPadding} text-sm ` +
+            "border-destructive/40 text-destructive hover:bg-destructive/10 dark:border-destructive/35"
+          }
+        >
+          Удалить фото
+        </button>
+      ) : null}
+
+      {isDeleteDialogOpen ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={deleteDialogTitleId}
+        >
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/60"
+            onClick={onCloseDeleteDialog}
+            aria-label="Закрыть"
+          />
+          <div className="relative z-10 w-full max-w-md rounded-xl border border-border bg-background p-5 shadow-lg dark:border-white/12 dark:bg-zinc-950">
+            <h2
+              id={deleteDialogTitleId}
+              className="text-base font-semibold text-foreground"
+            >
+              Удалить фото?
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Файл в хранилище и запись в базе будут удалены. Позже можно загрузить другое
+              изображение.
+            </p>
+            {deleteState.ok === false && deleteState.error !== undefined ? (
+              <p className="mt-3 text-sm text-destructive" role="alert">
+                {deleteState.error}
+              </p>
+            ) : null}
+            <div className="mt-5 flex flex-wrap items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={onCloseDeleteDialog}
+                className="rounded-md border border-border px-3 py-1.5 text-sm font-medium text-foreground transition hover:bg-muted/40 dark:border-white/15"
+              >
+                Отмена
+              </button>
+              <form action={deleteFormAction} className="inline">
+                <input type="hidden" name="productId" value={productId} />
+                <button
+                  type="submit"
+                  disabled={isDeletePending || isPending}
+                  className="inline-flex items-center justify-center rounded-md bg-destructive px-4 py-2 text-sm font-medium text-white transition hover:bg-destructive/90!"
+                >
+                  {isDeletePending ? "Удаление…" : "Удалить фото"}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       <div className="rounded-xl border border-dashed border-border/80 bg-muted/5 p-4 dark:border-white/15 dark:bg-white/2">
         {blobConfigured ? (

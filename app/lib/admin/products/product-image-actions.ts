@@ -44,6 +44,44 @@ export type ProductImageUploadState = {
   savedImage?: ProductImageUploadSaved;
 };
 
+export type ProductImageDeleteState = {
+  ok: boolean;
+  error?: string;
+  /** When true, all product image rows and blobs for this product were removed. */
+  deleted?: boolean;
+};
+
+export const deleteProductImageAction = async (
+  _previous: ProductImageDeleteState | undefined,
+  formData: FormData,
+): Promise<ProductImageDeleteState> => {
+  await requireAdminSession();
+  const productIdRaw = formData.get("productId");
+  const productId = typeof productIdRaw === "string" ? productIdRaw.trim() : "";
+  if (productId === "") {
+    return { ok: false, error: "Не указан id товара." };
+  }
+  const product = await getProductById(productId);
+  if (product === undefined) {
+    return { ok: false, error: "Товар не найден." };
+  }
+  const existingImages = await listProductImagesByProductId(productId);
+  if (existingImages.length === 0) {
+    return { ok: true, deleted: false };
+  }
+  for (const image of existingImages) {
+    await tryDeleteProductImageBlob(image.url);
+  }
+  await deleteAllProductImagesForProduct(productId);
+  logAdminProductImages("deleteProductImageAction: removed all images for product", {
+    productId,
+    previousCount: existingImages.length,
+  });
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${encodeURIComponent(productId)}/edit`);
+  return { ok: true, deleted: true };
+};
+
 export const uploadProductImageAction = async (
   _previous: ProductImageUploadState | undefined,
   formData: FormData,
