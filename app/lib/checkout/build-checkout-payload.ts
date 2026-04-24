@@ -4,6 +4,8 @@ import type { CartLine } from "@/app/lib/cart/cart-types";
 import { getCartLineSubtotalUah } from "@/app/lib/cart/cart-line-price";
 import type { StoreProduct } from "@/app/lib/catalog/types/product";
 
+import type { AppLocale } from "@/app/lib/i18n/locales";
+
 import type {
   CheckoutFormValues,
   CheckoutPayloadLine,
@@ -15,6 +17,7 @@ type ProductResolver = (productId: string) => StoreProduct | undefined;
 
 type BuildCheckoutOptions = {
   npApiConfigured: boolean;
+  orderConfirmationLocale: AppLocale;
 };
 
 export const buildCheckoutSubmitPayload = (
@@ -51,6 +54,13 @@ export const buildCheckoutSubmitPayload = (
 
   const totalUah = _.sumBy(resolvedLines, (line) => line.lineTotalUah);
 
+  const customerCity = (() => {
+    if (formValues.deliveryMethod === "nova_poshta" && options.npApiConfigured) {
+      return formValues.npCityName.trim() || formValues.city.trim();
+    }
+    return formValues.city.trim();
+  })();
+
   const comment = formValues.comment.trim();
 
   let novaPoshta: CheckoutNovaPoshtaDetails | undefined;
@@ -76,7 +86,7 @@ export const buildCheckoutSubmitPayload = (
       name: formValues.customerName.trim(),
       phone: formValues.phone.trim(),
       email: formValues.email.trim(),
-      city: formValues.city.trim(),
+      city: customerCity,
     },
     deliveryMethod: formValues.deliveryMethod,
     paymentMethod: formValues.paymentMethod,
@@ -85,6 +95,8 @@ export const buildCheckoutSubmitPayload = (
     totalUah,
     clientSubmittedAt: new Date().toISOString(),
     cartLines: [...cartLines],
+    sendOrderCopyToEmail: formValues.sendOrderCopyToEmail,
+    orderConfirmationLocale: options.orderConfirmationLocale,
     ...(novaPoshta !== undefined ? { novaPoshta } : {}),
   };
 };

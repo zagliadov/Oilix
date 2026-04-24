@@ -10,7 +10,7 @@ import {
   useState,
   type FormEvent,
 } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { CheckoutNovaPoshtaBlock } from "@/components/checkout/checkout-nova-poshta-block";
 import { CheckoutOrderSummary } from "@/components/checkout/checkout-order-summary";
@@ -27,6 +27,11 @@ import {
   validateCheckoutForm,
 } from "@/app/lib/checkout/validate-checkout-form";
 import { getStoreProductByIdInCatalog } from "@/app/lib/catalog";
+import {
+  defaultLocale,
+  isAppLocale,
+  type AppLocale,
+} from "@/app/lib/i18n/locales";
 import { useCart } from "@/components/cart/cart-context";
 import { useStorefrontCatalog } from "@/components/storefront/use-storefront-catalog";
 import {
@@ -58,6 +63,10 @@ type CheckoutPageClientProps = {
 
 export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps) => {
   const router = useRouter();
+  const siteLocale = useLocale();
+  const orderConfirmationLocale: AppLocale = isAppLocale(siteLocale)
+    ? siteLocale
+    : defaultLocale;
   const checkoutTranslations = useTranslations("Checkout");
   const landingTranslations = useTranslations("Landing");
   const { lines, isReady, totalPriceUah, clearCart } = useCart();
@@ -153,7 +162,7 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
       formValues,
       validLines,
       (productId) => getStoreProductByIdInCatalog(productId, catalog) ?? undefined,
-      { npApiConfigured },
+      { npApiConfigured, orderConfirmationLocale },
     );
     if (payload === null) {
       return;
@@ -314,25 +323,40 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
             </FormField>
           </div>
 
-          <FormField
-            id="checkout-city"
-            label={tr("fieldCity")}
-            required
-            error={fieldErrors.city}
-          >
-            <input
-              id="checkout-city"
-              name="city"
-              type="text"
-              autoComplete="address-level2"
-              value={formValues.city}
-              onChange={(event) => {
-                handleChange("city", event.target.value);
-              }}
-              className={formInputClassName(Boolean(fieldErrors.city))}
-              aria-invalid={Boolean(fieldErrors.city)}
-            />
-          </FormField>
+          {formValues.email.trim() !== "" ? (
+            <div
+              className="flex items-center justify-between gap-4 rounded-lg border border-border/80 bg-muted/15 px-4 py-3 dark:border-white/10 dark:bg-white/4"
+            >
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-foreground">
+                  {tr("fieldSendOrderCopyToEmail")}
+                </p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {tr("fieldSendOrderCopyToEmailHint")}
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={formValues.sendOrderCopyToEmail}
+                aria-label={tr("fieldSendOrderCopyToEmail")}
+                onClick={() => {
+                  handleChange("sendOrderCopyToEmail", !formValues.sendOrderCopyToEmail);
+                }}
+                className={`relative h-7 w-12 shrink-0 rounded-full p-0.5 text-left transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand ${
+                  formValues.sendOrderCopyToEmail
+                    ? "border border-transparent bg-brand"
+                    : "border border-border/60 bg-muted dark:border-white/10"
+                }`}
+              >
+                <span
+                  className={`block h-6 w-6 rounded-full bg-white shadow transition-transform duration-200 dark:bg-zinc-100 ${
+                    formValues.sendOrderCopyToEmail ? "translate-x-5" : "translate-x-0"
+                  }`}
+                />
+              </button>
+            </div>
+          ) : null}
 
           <FormField
             id="checkout-delivery"
@@ -361,6 +385,29 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
               ))}
             </select>
           </FormField>
+
+          {formValues.deliveryMethod !== "" &&
+          !(formValues.deliveryMethod === "nova_poshta" && npApiConfigured) ? (
+            <FormField
+              id="checkout-city"
+              label={tr("fieldCity")}
+              required
+              error={fieldErrors.city}
+            >
+              <input
+                id="checkout-city"
+                name="city"
+                type="text"
+                autoComplete="address-level2"
+                value={formValues.city}
+                onChange={(event) => {
+                  handleChange("city", event.target.value);
+                }}
+                className={formInputClassName(Boolean(fieldErrors.city))}
+                aria-invalid={Boolean(fieldErrors.city)}
+              />
+            </FormField>
+          ) : null}
 
           {formValues.deliveryMethod === "nova_poshta" ? (
             <CheckoutNovaPoshtaBlock

@@ -42,9 +42,13 @@ export const validateCheckoutForm = (
     errors.email = "emailInvalid";
   }
 
-  const city = values.city.trim();
-  if (city.length < 2) {
-    errors.city = "cityMin";
+  const useNovaPoshtaListForCity =
+    values.deliveryMethod === "nova_poshta" && options.npApiConfigured;
+  if (!useNovaPoshtaListForCity) {
+    const city = values.city.trim();
+    if (city.length < 2) {
+      errors.city = "cityMin";
+    }
   }
 
   if (values.deliveryMethod === "") {

@@ -1,4 +1,5 @@
 import type { CartLine } from "@/app/lib/cart/cart-types";
+import type { AppLocale } from "@/app/lib/i18n/locales";
 
 /** Mirrors future API enums / DB values. */
 export type CheckoutDeliveryMethod = "nova_poshta" | "ukrposhta" | "pickup";
@@ -21,6 +22,8 @@ export type CheckoutFormValues = {
   npWarehouseName: string;
   /** Nova Poshta — without API: free-text branch / address */
   npBranchManual: string;
+  /** Shown when email is not empty: send a confirmation copy to the customer */
+  sendOrderCopyToEmail: boolean;
 };
 
 export const defaultCheckoutFormValues = (): CheckoutFormValues => ({
@@ -36,6 +39,7 @@ export const defaultCheckoutFormValues = (): CheckoutFormValues => ({
   npWarehouseRef: "",
   npWarehouseName: "",
   npBranchManual: "",
+  sendOrderCopyToEmail: true,
 });
 
 /** Resolved line for ERP / API payload. */
@@ -78,4 +82,8 @@ export type CheckoutSubmitPayload = {
   cartLines: CartLine[];
   /** Filled when delivery is Nova Poshta */
   novaPoshta?: CheckoutNovaPoshtaDetails;
+  /** If true, server sends a friendly confirmation email to the customer (when email is valid) */
+  sendOrderCopyToEmail: boolean;
+  /** Locale of the storefront when the order was placed — used for the customer confirmation email only */
+  orderConfirmationLocale: AppLocale;
 };

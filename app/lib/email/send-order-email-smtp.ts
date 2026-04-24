@@ -15,25 +15,27 @@ import {
   getSmtpUser,
 } from "./order-email-config";
 
-export const sendOrderEmailViaSmtp = async (
-  payload: CheckoutSubmitPayload,
-): Promise<{ ok: true } | { ok: false }> => {
+export type SmtpMessage = {
+  to: string | string[];
+  subject: string;
+  text: string;
+  html: string;
+  replyTo?: string;
+};
+
+/**
+ * General SMTP send using the same credentials as order notifications.
+ */
+export const sendSmtpWithOrderConfig = async (
+  message: SmtpMessage,
+): Promise<boolean> => {
   const from = getOrderFromAddress();
-  const to = getOrderNotificationToEmails();
   const host = getSmtpHost();
   const user = getSmtpUser();
   const pass = getSmtpPassword();
-  if (
-    from === undefined ||
-    to.length === 0 ||
-    host === undefined ||
-    user === undefined ||
-    pass === undefined
-  ) {
-    return { ok: false };
+  if (from === undefined || host === undefined || user === undefined || pass === undefined) {
+    return false;
   }
-
-  const { subject, text, html, replyTo } = formatCheckoutOrderEmail(payload);
 
   const transporter = nodemailer.createTransport({
     host,
@@ -45,17 +47,30 @@ export const sendOrderEmailViaSmtp = async (
   try {
     await transporter.sendMail({
       from,
-      to,
-      subject,
-      text,
-      html,
-      replyTo,
+      to: message.to,
+      subject: message.subject,
+      text: message.text,
+      html: message.html,
+      replyTo: message.replyTo,
     });
-    return { ok: true };
+    return true;
   } catch (error) {
     if (process.env.NODE_ENV === "development") {
-      console.error("[checkout email] SMTP error", error);
+      console.error("[email] SMTP error", error);
     }
+    return false;
+  }
+};
+
+export const sendOrderEmailViaSmtp = async (
+  payload: CheckoutSubmitPayload,
+): Promise<{ ok: true } | { ok: false }> => {
+  const to = getOrderNotificationToEmails();
+  if (to.length === 0) {
     return { ok: false };
   }
+
+  const { subject, text, html, replyTo } = formatCheckoutOrderEmail(payload);
+  const ok = await sendSmtpWithOrderConfig({ to, subject, text, html, replyTo });
+  return ok ? { ok: true } : { ok: false };
 };

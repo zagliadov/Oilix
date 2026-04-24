@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import { DateTime } from "luxon";
 
 import type { CartLine } from "@/app/lib/cart/cart-types";
+import { resolveOrderConfirmationLocale } from "@/app/lib/i18n/locales";
 import { isNovaPoshtaApiConfigured } from "@/app/lib/nova-poshta/env";
 
 import type {
@@ -141,8 +142,7 @@ export const parseCheckoutSubmitPayload = (body: unknown): ParseCheckoutPayloadR
     name.trim().length < 2 ||
     typeof phone !== "string" ||
     countDigits(phone) < PHONE_DIGITS_MIN ||
-    typeof city !== "string" ||
-    city.trim().length < 2
+    typeof city !== "string"
   ) {
     return { ok: false };
   }
@@ -154,6 +154,13 @@ export const parseCheckoutSubmitPayload = (body: unknown): ParseCheckoutPayloadR
     return { ok: false };
   }
   if (!isPaymentMethod(body.paymentMethod)) {
+    return { ok: false };
+  }
+
+  if (
+    body.sendOrderCopyToEmail === undefined ||
+    typeof body.sendOrderCopyToEmail !== "boolean"
+  ) {
     return { ok: false };
   }
 
@@ -254,6 +261,10 @@ export const parseCheckoutSubmitPayload = (body: unknown): ParseCheckoutPayloadR
     return { ok: false };
   }
 
+  const orderConfirmationLocale = resolveOrderConfirmationLocale(
+    body.orderConfirmationLocale,
+  );
+
   const deliveryMethod: CheckoutDeliveryMethod = body.deliveryMethod;
   const paymentMethod: CheckoutPaymentMethod = body.paymentMethod;
   const comment: string | null =
@@ -261,12 +272,24 @@ export const parseCheckoutSubmitPayload = (body: unknown): ParseCheckoutPayloadR
       ? null
       : (commentRaw as string);
 
+  const cityTrimmed = city.trim();
+  const resolvedCustomerCity =
+    deliveryMethod === "nova_poshta" &&
+    npApiConfigured &&
+    novaPoshta !== undefined &&
+    novaPoshta.source === "api"
+      ? novaPoshta.cityName
+      : cityTrimmed;
+  if (resolvedCustomerCity.length < 2) {
+    return { ok: false };
+  }
+
   const payload: CheckoutSubmitPayload = {
     customer: {
       name: name.trim(),
       phone: phone.trim(),
       email: email.trim(),
-      city: city.trim(),
+      city: resolvedCustomerCity,
     },
     deliveryMethod,
     paymentMethod,
@@ -275,6 +298,8 @@ export const parseCheckoutSubmitPayload = (body: unknown): ParseCheckoutPayloadR
     totalUah: body.totalUah,
     clientSubmittedAt,
     cartLines,
+    sendOrderCopyToEmail: body.sendOrderCopyToEmail,
+    orderConfirmationLocale,
     ...(novaPoshta !== undefined ? { novaPoshta } : {}),
   };
 

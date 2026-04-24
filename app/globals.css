@@ -84,6 +84,22 @@
   .shadow-cta-glow {
     box-shadow: 0 0 40px -8px var(--glow);
   }
+
+  /*
+   * Landing hero: feather photo into the page background.
+   * (Inset box-shadow on an empty layer often sits *under* the <img> from next/image; a real gradient is reliable.)
+   */
+  .hero-expert-photo-vignette {
+    z-index: 1;
+    background: radial-gradient(
+      ellipse 92% 90% at 50% 42%,
+      transparent 0%,
+      transparent 42%,
+      color-mix(in srgb, var(--background) 25%, transparent) 62%,
+      color-mix(in srgb, var(--background) 75%, transparent) 85%,
+      var(--background) 100%
+    );
+  }
 }
 
 /*

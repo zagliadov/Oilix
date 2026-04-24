@@ -3,7 +3,7 @@ import "server-only";
 /**
  * Recipients: comma-separated in `OILIX_ORDER_TO_EMAILS`.
  * Sending: **Google SMTP** (or any SMTP) via `OILIX_SMTP_*`, or **Resend** via `RESEND_API_KEY`.
- * If SMTP is fully configured, it is used first; otherwise Resend (if configured).
+ * **Send order:** SMTP first if configured; on failure, **Resend** is used when configured (auto-failover).
  */
 export const getResendApiKey = (): string | undefined => {
   const raw = process.env.RESEND_API_KEY;
@@ -98,7 +98,7 @@ export const isSmtpOrderSendingConfigured = (): boolean => {
   );
 };
 
-const isResendOrderSendingConfigured = (): boolean => {
+export const isResendOrderSendingConfigured = (): boolean => {
   return (
     getResendApiKey() !== undefined &&
     getOrderFromAddress() !== undefined &&
