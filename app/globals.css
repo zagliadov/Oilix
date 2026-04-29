@@ -1,8 +1,16 @@
-/* `app/globals.css` is under `app/`: set Tailwind v4 scan root to repo root. Without this,
-   `next build` emits ~11KB CSS and drops almost all utilities (no .flex, grid, spacing). */
-@import "tailwindcss" source("..");
+/* @import: https://tailwindcss.com/docs/installation/using-postcss
+   @source: stylesheet lives in app/; scan repo root so classes in /components are included —
+   https://tailwindcss.com/docs/detecting-classes-in-source-files */
+@import "tailwindcss";
+
+@source "..";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* Framer Motion useScroll: non-static root so scroll offset / offsetParent match expectations. */
+html {
+  position: relative;
+}
 
 :root {
   --background: #f4f4f5;
