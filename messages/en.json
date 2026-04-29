@@ -474,6 +474,9 @@
     "lead": "Looks like all stock is sold out or this page got hijacked.",
     "backHome": "Go back",
     "goCatalog": "Go to catalog",
-    "imageAlt": "Oilix character on the 404 page"
+    "imageAlt": "Oilix character on the 404 page",
+    "musicEnableSound": "Turn on",
+    "musicDisableSound": "Turn off",
+    "musicAriaLabel": "Background music on the 404 page"
   }
 }

@@ -474,6 +474,9 @@
     "lead": "Похоже, весь товар продан или страницу просто угнали.",
     "backHome": "Откат",
     "goCatalog": "В каталог",
-    "imageAlt": "Персонаж Oilix на странице 404"
+    "imageAlt": "Персонаж Oilix на странице 404",
+    "musicEnableSound": "Подрубить",
+    "musicDisableSound": "Отрубить",
+    "musicAriaLabel": "Фоновая музыка на странице 404"
   }
 }
