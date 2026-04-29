@@ -58,7 +58,10 @@ export default async function NotFound() {
               <h1 className="mt-1 font-display text-[1.6rem] font-semibold leading-tight tracking-tight text-[#e8c97a] drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)] sm:text-4xl lg:-mt-4 lg:text-7xl lg:text-[#b4872f] lg:drop-shadow-none">
                 {notFoundTranslations("title")}
               </h1>
-              <p className="mt-3 max-w-xl text-[0.92rem] leading-snug text-[#f0e6cc] drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] sm:mt-4 sm:text-lg lg:mt-6 lg:text-2xl lg:leading-relaxed lg:text-[#9c7832] lg:drop-shadow-none">
+              <p className="mt-3 max-w-xl font-display text-[1rem] font-semibold italic leading-snug text-[#f5e9c8] drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] sm:mt-4 sm:text-lg lg:mt-5 lg:text-xl lg:text-[#d4b87a] lg:drop-shadow-none">
+                {notFoundTranslations("kicker")}
+              </p>
+              <p className="mt-2 max-w-xl text-[0.92rem] leading-snug text-[#f0e6cc] drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] sm:mt-3 sm:text-lg lg:mt-4 lg:text-2xl lg:leading-relaxed lg:text-[#9c7832] lg:drop-shadow-none">
                 {notFoundTranslations("lead")}
               </p>
               <div className="mt-5 flex flex-col gap-3 sm:mt-7 lg:mt-10 lg:flex-row lg:flex-wrap lg:items-center lg:gap-5">
