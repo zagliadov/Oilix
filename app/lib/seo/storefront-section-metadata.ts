@@ -1,5 +1,6 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 
 import { buildSegmentRouteMetadata } from "./page-metadata";
 
@@ -20,11 +21,13 @@ export const buildStorefrontSectionMetadata = async (
 ): Promise<Metadata> => {
   const sectionTranslations = await getTranslations(namespace);
   const metadataTranslations = await getTranslations("Metadata");
+  const locale = await getLocale();
   const segmentTitle = sectionTranslations("metaTitle");
   return buildSegmentRouteMetadata({
     segmentTitle,
     pageTitle: metadataTranslations("pageTitle", { segment: segmentTitle }),
     description: sectionTranslations("metaDescription"),
     path,
+    ...(isAppLocale(locale) ? { locale } : {}),
   });
 };

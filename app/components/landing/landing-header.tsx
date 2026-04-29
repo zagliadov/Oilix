@@ -1,8 +1,10 @@
 import * as _ from "lodash";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { navLinks } from "@/app/landing/data";
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { CartLinkButton } from "@/components/cart/cart-link-button";
 import { NavHashLink } from "@/components/nav-hash-link";
 import { SectionShell } from "@/app/components/landing/section-shell";
@@ -11,13 +13,15 @@ import { MobileNav } from "@/components/mobile-nav";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export const LandingHeader = async () => {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const landingTranslations = await getTranslations("Landing");
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-xl dark:bg-[#07070a]/80">
       <SectionShell className="flex h-16 w-full items-center justify-between gap-4 md:gap-6">
         <Link
-          href="/"
+          href={buildLocalizedPath("/", activeLocale)}
           className="font-display text-lg font-semibold uppercase tracking-tight text-foreground"
         >
           {landingTranslations("brand")}
@@ -35,7 +39,7 @@ export const LandingHeader = async () => {
             ) : (
               <Link
                 key={link.href}
-                href={link.href}
+                href={buildLocalizedPath(link.href, activeLocale)}
                 className="font-display text-[0.875rem] font-semibold uppercase tracking-wide text-muted-foreground transition-colors hover:text-foreground"
               >
                 {landingTranslations(`nav.${link.navKey}`)}

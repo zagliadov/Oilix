@@ -1,8 +1,10 @@
 import * as _ from "lodash";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
@@ -17,6 +19,8 @@ export const generateMetadata = async () =>
   buildStorefrontSectionMetadata("Returns", "/returns");
 
 export default async function ReturnsPage() {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const returnsTranslations = await getTranslations("Returns");
   const introSteps = returnsTranslations.raw("introSteps") as string[];
   const documents = returnsTranslations.raw("documents") as string[];
@@ -33,7 +37,7 @@ export default async function ReturnsPage() {
           <SectionShell>
             <div className="w-full">
               <Link
-                href="/"
+                href={buildLocalizedPath("/", activeLocale)}
                 className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden strokeWidth={2} />
@@ -44,7 +48,7 @@ export default async function ReturnsPage() {
                 <h1 className="font-display text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                   {returnsTranslations("title")}
                 </h1>
-                <p className="mt-3 text-base leading-[1.5] text-muted-foreground sm:text-lg">
+                <p className="mt-3 text-base leading-normal text-muted-foreground sm:text-lg">
                   {returnsTranslations("subtitle")}
                 </p>
               </header>
@@ -60,7 +64,7 @@ export default async function ReturnsPage() {
                 </ol>
               </section>
 
-              <section className="mt-10 rounded-md border border-border bg-card p-6 dark:border-white/[0.08] dark:bg-white/[0.03] sm:p-8">
+              <section className="mt-10 rounded-md border border-border bg-card p-6 dark:border-white/8 dark:bg-white/3 sm:p-8">
                 <h2 className="font-display text-lg font-semibold uppercase tracking-wide text-foreground">
                   {returnsTranslations("documentsTitle")}
                 </h2>

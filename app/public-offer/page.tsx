@@ -2,6 +2,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
@@ -31,7 +32,7 @@ export default async function PublicOfferPage() {
           <SectionShell>
             <div className="mx-auto w-full max-w-3xl">
               <Link
-                href="/"
+                href={buildLocalizedPath("/", locale)}
                 className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden strokeWidth={2} />

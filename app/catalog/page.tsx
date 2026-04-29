@@ -1,7 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { CatalogExplorer } from "@/app/components/catalog/catalog-explorer";
 import { LandingBackground } from "@/app/components/landing/landing-background";
@@ -16,6 +18,8 @@ export const generateMetadata = async () =>
   buildStorefrontSectionMetadata("Catalog", "/catalog");
 
 export default async function CatalogPage() {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const catalogTranslations = await getTranslations("Catalog");
 
   const catalog = buildCatalogIndexes(await getCatalogBundle());
@@ -33,7 +37,7 @@ export default async function CatalogPage() {
           <SectionShell>
             <div className="w-full">
               <Link
-                href="/"
+                href={buildLocalizedPath("/", activeLocale)}
                 className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
               >
                 <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden strokeWidth={2} />

@@ -29,6 +29,8 @@ const openGraphLocaleByAppLocale: Record<string, string> = {
   uk: "uk_UA",
   ru: "ru_RU",
 };
+const googleSiteVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const metadataTranslations = await getTranslations("Metadata");
@@ -55,6 +57,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
       title: metadataTranslations("title"),
       description: metadataTranslations("description"),
       images: ["/opengraph-image"],
+    },
+    verification: {
+      google: googleSiteVerification,
     },
     robots: {
       index: true,

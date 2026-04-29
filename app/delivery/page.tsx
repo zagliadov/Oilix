@@ -1,8 +1,10 @@
 import * as _ from "lodash";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingFooter } from "@/app/components/landing/landing-footer";
@@ -15,6 +17,8 @@ export const generateMetadata = async () =>
   buildStorefrontSectionMetadata("Delivery", "/delivery");
 
 export default async function DeliveryPage() {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const deliveryTranslations = await getTranslations("Delivery");
   const novaPoints = deliveryTranslations.raw("novaPoints") as string[];
   const ukrposhtaPoints = deliveryTranslations.raw("ukrposhtaPoints") as string[];
@@ -29,7 +33,7 @@ export default async function DeliveryPage() {
         <main className="flex w-full flex-1 flex-col pb-20 pt-8">
           <SectionShell>
             <Link
-              href="/"
+              href={buildLocalizedPath("/", activeLocale)}
               className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
             >
               <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden strokeWidth={2} />
@@ -50,10 +54,10 @@ export default async function DeliveryPage() {
                 <h2 className="font-display text-lg font-semibold uppercase tracking-wide text-foreground">
                   {deliveryTranslations("novaTitle")}
                 </h2>
-                <p className="mt-3 text-base leading-[1.5] text-muted-foreground">
+                <p className="mt-3 text-base leading-normal text-muted-foreground">
                   {deliveryTranslations("novaLead")}
                 </p>
-                <ul className="mt-6 space-y-3 text-base leading-[1.5] text-foreground/90 dark:text-zinc-300">
+                <ul className="mt-6 space-y-3 text-base leading-normal text-foreground/90 dark:text-zinc-300">
                   {_.map(novaPoints, (point) => (
                     <li key={point} className="flex gap-3">
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-md bg-brand" aria-hidden />
@@ -63,14 +67,14 @@ export default async function DeliveryPage() {
                 </ul>
               </section>
 
-              <section className="rounded-md border border-border bg-card p-6 dark:border-white/[0.08] dark:bg-white/[0.03] sm:p-8">
+              <section className="rounded-md border border-border bg-card p-6 dark:border-white/8 dark:bg-white/3 sm:p-8">
                 <h2 className="font-display text-lg font-semibold uppercase tracking-wide text-foreground">
                   {deliveryTranslations("ukrposhtaTitle")}
                 </h2>
-                <p className="mt-3 text-base leading-[1.5] text-muted-foreground">
+                <p className="mt-3 text-base leading-normal text-muted-foreground">
                   {deliveryTranslations("ukrposhtaLead")}
                 </p>
-                <ul className="mt-6 space-y-3 text-base leading-[1.5] text-foreground/90 dark:text-zinc-300">
+                <ul className="mt-6 space-y-3 text-base leading-normal text-foreground/90 dark:text-zinc-300">
                   {_.map(ukrposhtaPoints, (point) => (
                     <li key={point} className="flex gap-3">
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-md bg-brand" aria-hidden />
@@ -81,7 +85,7 @@ export default async function DeliveryPage() {
               </section>
             </div>
 
-            <p className="mt-10 max-w-3xl rounded-md border border-brand/25 bg-brand-soft p-4 text-sm leading-[1.5] text-muted-foreground dark:border-brand/20">
+            <p className="mt-10 max-w-3xl rounded-md border border-brand/25 bg-brand-soft p-4 text-sm leading-normal text-muted-foreground dark:border-brand/20">
               {deliveryTranslations("note")}
             </p>
 

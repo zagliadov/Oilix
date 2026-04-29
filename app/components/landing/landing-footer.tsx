@@ -1,10 +1,14 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 
 export const LandingFooter = async () => {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const landingTranslations = await getTranslations("Landing");
 
   return (
@@ -19,31 +23,31 @@ export const LandingFooter = async () => {
           className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2"
         >
           <Link
-            href="/catalog"
+            href={buildLocalizedPath("/catalog", activeLocale)}
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >
             {landingTranslations("footer.catalog")}
           </Link>
           <Link
-            href="/delivery"
+            href={buildLocalizedPath("/delivery", activeLocale)}
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >
             {landingTranslations("footer.delivery")}
           </Link>
           <Link
-            href="/public-offer"
+            href={buildLocalizedPath("/public-offer", activeLocale)}
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >
             {landingTranslations("footer.publicOffer")}
           </Link>
           <Link
-            href="/returns"
+            href={buildLocalizedPath("/returns", activeLocale)}
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >
             {landingTranslations("footer.returns")}
           </Link>
           <Link
-            href="/cart"
+            href={buildLocalizedPath("/cart", activeLocale)}
             className="font-medium text-muted-foreground underline-offset-4 transition hover:text-foreground hover:underline"
           >
             {landingTranslations("footer.cart")}

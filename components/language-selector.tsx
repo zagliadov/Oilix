@@ -2,10 +2,10 @@
 
 import { AnimatePresence, motion } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
-import * as _ from "lodash";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
+import * as _ from "lodash";
 
 import {
   appLocales,
@@ -23,6 +23,8 @@ const localeShortCode: Record<AppLocale, string> = {
 
 export const LanguageSelector = () => {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const activeLocaleFromHook = useLocale();
   const activeLocale: AppLocale = isAppLocale(activeLocaleFromHook)
     ? activeLocaleFromHook
@@ -62,6 +64,19 @@ export const LanguageSelector = () => {
       void (async () => {
         const result = await setUserLocale(nextLocale);
         if (result.ok) {
+          const localePrefixPattern = new RegExp(`^/(${_.join(appLocales, "|")})(?=/|$)`);
+          const pathnameWithoutLocale = pathname.replace(localePrefixPattern, "") || "/";
+          const normalizedPathname = pathnameWithoutLocale.startsWith("/")
+            ? pathnameWithoutLocale
+            : `/${pathnameWithoutLocale}`;
+          const localizedPathname = normalizedPathname === "/"
+            ? `/${nextLocale}`
+            : `/${nextLocale}${normalizedPathname}`;
+          const queryString = searchParams.toString();
+          const localizedHref = queryString === ""
+            ? localizedPathname
+            : `${localizedPathname}?${queryString}`;
+          router.replace(localizedHref);
           router.refresh();
         }
         setMenuOpen(false);
@@ -84,7 +99,7 @@ export const LanguageSelector = () => {
           setMenuOpen((previous) => !previous);
         }}
       >
-        <span className="relative inline-flex min-w-[1.75rem] justify-center overflow-hidden">
+        <span className="relative inline-flex min-w-7 justify-center overflow-hidden">
           <AnimatePresence mode="wait" initial={false}>
             <motion.span
               key={activeLocale}
@@ -114,7 +129,7 @@ export const LanguageSelector = () => {
           <motion.div
             key="language-menu"
             role="listbox"
-            className="absolute right-0 z-[60] mt-2 min-w-[5.5rem] overflow-hidden rounded-md border border-border bg-card py-1 shadow-lg backdrop-blur-md dark:bg-zinc-900/95"
+            className="absolute right-0 z-60 mt-2 min-w-22 overflow-hidden rounded-md border border-border bg-card py-1 shadow-lg backdrop-blur-md dark:bg-zinc-900/95"
             initial={{ opacity: 0, y: -6, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}

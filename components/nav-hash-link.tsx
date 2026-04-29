@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import type { ComponentProps } from "react";
 
 type NavHashLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
@@ -8,5 +9,6 @@ type NavHashLinkProps = Omit<ComponentProps<typeof Link>, "href"> & {
 };
 
 export const NavHashLink = ({ hash, ...props }: NavHashLinkProps) => {
-  return <Link href={`/#${hash}`} {...props} />;
+  const locale = useLocale();
+  return <Link href={`/${locale}/#${hash}`} {...props} />;
 };

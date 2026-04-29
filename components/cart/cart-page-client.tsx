@@ -3,8 +3,9 @@
 import * as _ from "lodash";
 import { ShoppingBag } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import { CartLineRow } from "@/components/cart/cart-line-row";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
 import { formatPriceUah } from "@/app/lib/format-price";
@@ -24,6 +25,7 @@ import {
 } from "@/components/ui/storefront";
 
 export const CartPageClient = () => {
+  const locale = useLocale();
   const cartTranslations = useTranslations("Cart");
   const landingTranslations = useTranslations("Landing");
   const catalog = useStorefrontCatalog();
@@ -81,13 +83,13 @@ export const CartPageClient = () => {
         </p>
         <div className="mt-8 flex w-full max-w-sm flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
-            href="/catalog"
+            href={buildLocalizedPath("/catalog", locale)}
             className={`inline-flex flex-1 sm:flex-none ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
           >
             {cartTranslations("goToCatalog")}
           </Link>
           <Link
-            href="/"
+            href={buildLocalizedPath("/", locale)}
             className={`inline-flex flex-1 sm:flex-none ${storefrontButtonSecondary} px-6 py-3.5 dark:border-white/15`}
           >
             {cartTranslations("backHome")}
@@ -151,7 +153,7 @@ export const CartPageClient = () => {
           </p>
           <div className="mt-6 flex flex-col gap-3">
             <Link
-              href="/checkout"
+              href={buildLocalizedPath("/checkout", locale)}
               className={`w-full ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
             >
               {cartTranslations("checkoutCta")}
@@ -165,7 +167,10 @@ export const CartPageClient = () => {
             >
               {cartTranslations("clearCart")}
             </button>
-            <Link href="/catalog" className={`text-center text-sm ${storefrontLinkBrand}`}>
+            <Link
+              href={buildLocalizedPath("/catalog", locale)}
+              className={`text-center text-sm ${storefrontLinkBrand}`}
+            >
               {cartTranslations("continueShopping")}
             </Link>
           </div>

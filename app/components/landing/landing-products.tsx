@@ -1,16 +1,20 @@
 import * as _ from "lodash";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { ProductCard } from "@/app/components/catalog/product-card";
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import { SectionShell } from "@/app/components/landing/section-shell";
 import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import { StickyHeading } from "@/components/motion/sticky-heading";
 import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { buildCatalogIndexes, selectPromoProducts } from "@/app/lib/catalog";
 
 export const LandingProducts = async () => {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const landingTranslations = await getTranslations("Landing");
   const catalog = buildCatalogIndexes(await getCatalogBundle());
   const promoProducts = selectPromoProducts(catalog.bundle.products);
@@ -34,7 +38,7 @@ export const LandingProducts = async () => {
             {landingTranslations("products.promoLead")}
           </p>
           <Link
-            href="/catalog"
+            href={buildLocalizedPath("/catalog", activeLocale)}
             className="mt-5 inline-flex text-sm font-semibold uppercase tracking-wide text-brand underline-offset-4 transition hover:underline"
           >
             {landingTranslations("products.viewFullCatalog")}
@@ -48,7 +52,12 @@ export const LandingProducts = async () => {
               className="min-w-0"
               delay={productIndex * 0.035}
             >
-              <ProductCard product={product} labels={labels} catalog={catalog} />
+              <ProductCard
+                product={product}
+                labels={labels}
+                catalog={catalog}
+                locale={activeLocale}
+              />
             </ScrollReveal>
           ))}
         </ul>

@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
 
+import { appLocales, defaultLocale, type AppLocale } from "@/app/lib/i18n/locales";
+
+const APP_LOCALE_TO_HREFLANG: Record<AppLocale, string> = {
+  ru: "ru-RU",
+  uk: "uk-UA",
+  en: "en-US",
+};
+
 /**
  * Optional absolute site URL for canonical URLs & Open Graph (`https://example.com`).
  * Set `NEXT_PUBLIC_SITE_URL` in deployment; metadata still works without it.
@@ -20,13 +28,21 @@ export const resolveSiteUrl = (): string | undefined => {
 export const resolveMetadataBase = (): Metadata["metadataBase"] => {
   const siteUrl = resolveSiteUrl();
   if (siteUrl === undefined) {
-    return undefined;
+    return new URL("http://localhost:3000");
   }
   try {
     return new URL(`${siteUrl}/`);
   } catch {
-    return undefined;
+    return new URL("http://localhost:3000");
   }
+};
+
+const buildLocalePath = (path: string, locale: AppLocale): string => {
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  if (normalizedPath === "/") {
+    return `/${locale}`;
+  }
+  return `/${locale}${normalizedPath}`;
 };
 
 const toCanonicalUrl = (
@@ -44,8 +60,11 @@ const toCanonicalUrl = (
   }
 };
 
-export const resolveAbsoluteUrl = (path: string): string | undefined => {
-  return toCanonicalUrl(resolveMetadataBase(), path);
+export const resolveAbsoluteUrl = (
+  path: string,
+  locale: AppLocale = defaultLocale,
+): string | undefined => {
+  return toCanonicalUrl(resolveMetadataBase(), buildLocalePath(path, locale));
 };
 
 const DEFAULT_SOCIAL_IMAGE_PATH = "/opengraph-image";
@@ -78,6 +97,7 @@ export type SegmentRouteMetadataInput = {
   description: string;
   path: string;
   imageUrl?: string;
+  locale?: AppLocale;
 };
 
 /**
@@ -89,14 +109,38 @@ export const buildSegmentRouteMetadata = ({
   description,
   path,
   imageUrl,
+  locale = defaultLocale,
 }: SegmentRouteMetadataInput): Metadata => {
   const metadataBase = resolveMetadataBase();
-  const canonicalUrl = toCanonicalUrl(metadataBase, path);
+  const canonicalUrl = toCanonicalUrl(
+    metadataBase,
+    buildLocalePath(path, locale),
+  );
+  const languageAlternates = Object.fromEntries(
+    appLocales
+      .map((locale) => ({
+        hreflang: APP_LOCALE_TO_HREFLANG[locale],
+        url: toCanonicalUrl(metadataBase, buildLocalePath(path, locale)),
+      }))
+      .filter((entry): entry is { hreflang: string; url: string } => entry.url !== undefined)
+      .map((entry) => [entry.hreflang, entry.url]),
+  );
+  const xDefaultAlternate = toCanonicalUrl(metadataBase, buildLocalePath(path, defaultLocale));
 
   return {
     title: segmentTitle,
     description,
-    ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
+    ...(canonicalUrl !== undefined
+      ? {
+        alternates: {
+          canonical: canonicalUrl,
+          languages: {
+            ...languageAlternates,
+            ...(xDefaultAlternate !== undefined ? { "x-default": xDefaultAlternate } : {}),
+          },
+        },
+      }
+      : {}),
     ...socialMetadata({ pageTitle, description, canonicalUrl, imageUrl }),
   };
 };
@@ -106,6 +150,7 @@ export type AbsoluteRouteMetadataInput = {
   description: string;
   path: string;
   imageUrl?: string;
+  locale?: AppLocale;
 };
 
 /**
@@ -116,14 +161,38 @@ export const buildAbsoluteRouteMetadata = ({
   description,
   path,
   imageUrl,
+  locale = defaultLocale,
 }: AbsoluteRouteMetadataInput): Metadata => {
   const metadataBase = resolveMetadataBase();
-  const canonicalUrl = toCanonicalUrl(metadataBase, path);
+  const canonicalUrl = toCanonicalUrl(
+    metadataBase,
+    buildLocalePath(path, locale),
+  );
+  const languageAlternates = Object.fromEntries(
+    appLocales
+      .map((locale) => ({
+        hreflang: APP_LOCALE_TO_HREFLANG[locale],
+        url: toCanonicalUrl(metadataBase, buildLocalePath(path, locale)),
+      }))
+      .filter((entry): entry is { hreflang: string; url: string } => entry.url !== undefined)
+      .map((entry) => [entry.hreflang, entry.url]),
+  );
+  const xDefaultAlternate = toCanonicalUrl(metadataBase, buildLocalePath(path, defaultLocale));
 
   return {
     title: { absolute: pageTitle },
     description,
-    ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
+    ...(canonicalUrl !== undefined
+      ? {
+        alternates: {
+          canonical: canonicalUrl,
+          languages: {
+            ...languageAlternates,
+            ...(xDefaultAlternate !== undefined ? { "x-default": xDefaultAlternate } : {}),
+          },
+        },
+      }
+      : {}),
     ...socialMetadata({ pageTitle, description, canonicalUrl, imageUrl }),
   };
 };

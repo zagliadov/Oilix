@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
 import { ProductDetailBreadcrumb } from "@/app/components/product/product-detail-breadcrumb";
 import { ProductDetailDescriptionSection } from "@/app/components/product/product-detail-description-section";
@@ -20,6 +20,7 @@ import { formatPriceUah } from "@/app/lib/format-price";
 import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
 import { buildAbsoluteRouteMetadata, resolveAbsoluteUrl, resolveSiteUrl } from "@/app/lib/seo/page-metadata";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import type { ProductCardLabels } from "@/app/components/catalog/product-card";
 import {
   buildCatalogIndexes,
@@ -56,6 +57,8 @@ export const generateStaticParams = async () => {
 
 export const generateMetadata = async ({ params }: ProductPageProps) => {
   const { id } = await params;
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const catalog = buildCatalogIndexes(await getCatalogBundle());
   const product = getStoreProductByIdInCatalog(id, catalog);
   const productTranslations = await getTranslations("Product");
@@ -67,6 +70,7 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
       pageTitle: productTranslations("notFoundTitle"),
       description: productTranslations("notFoundMetaDescription"),
       path: productPath,
+      locale: activeLocale,
     });
   }
 
@@ -90,12 +94,15 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
       price: priceFormatted,
     }),
     path: productPath,
+    locale: activeLocale,
     ...(imageUrl !== undefined ? { imageUrl } : {}),
   });
 };
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { id } = await params;
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const catalog = buildCatalogIndexes(await getCatalogBundle());
   const product = getStoreProductByIdInCatalog(id, catalog);
 
@@ -142,9 +149,10 @@ export default async function ProductPage({ params }: ProductPageProps) {
       ? product.description
       : productTranslations("lead");
   const siteUrl = resolveSiteUrl() ?? "http://localhost:3000";
-  const productUrl = resolveAbsoluteUrl(`/product/${product.id}`) ?? `${siteUrl}/product/${product.id}`;
+  const productUrl = resolveAbsoluteUrl(`/product/${product.id}`, activeLocale) ??
+    `${siteUrl}/${activeLocale}/product/${product.id}`;
   const imageUrl = heroImageUrl !== undefined
-    ? resolveAbsoluteUrl(heroImageUrl) ??
+    ? resolveAbsoluteUrl(heroImageUrl, activeLocale) ??
       (heroImageUrl.startsWith("http://") || heroImageUrl.startsWith("https://")
         ? heroImageUrl
         : `${siteUrl}${heroImageUrl}`)
@@ -180,7 +188,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         "@type": "ListItem",
         position: 1,
         name: productTranslations("breadcrumbCatalog"),
-        item: resolveAbsoluteUrl("/catalog") ?? `${siteUrl}/catalog`,
+        item: resolveAbsoluteUrl("/catalog", activeLocale) ?? `${siteUrl}/${activeLocale}/catalog`,
       },
       {
         "@type": "ListItem",
@@ -218,7 +226,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
         <main className="flex w-full flex-1 flex-col pb-24 pt-8 sm:pb-20">
           <SectionShell>
             <Link
-              href="/catalog"
+              href={`/${activeLocale}/catalog`}
               className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
             >
               <ArrowLeft
@@ -232,7 +240,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
             <div className="mt-6">
               <ProductDetailBreadcrumb
                 catalogLabel={productTranslations("breadcrumbCatalog")}
-                catalogHref="/catalog"
+                catalogHref={`/${activeLocale}/catalog`}
                 categoryLabel={categoryName}
                 productTitle={product.name}
               />
@@ -324,6 +332,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 products={relatedProducts}
                 labels={cardLabels}
                 catalog={catalog}
+                locale={activeLocale}
               />
               <ProductShelf
                 sectionId="cross-sell"
@@ -331,6 +340,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
                 products={crossSellProducts}
                 labels={cardLabels}
                 catalog={catalog}
+                locale={activeLocale}
               />
             </div>
           </SectionShell>

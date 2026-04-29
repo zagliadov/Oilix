@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
+import { appLocales } from "@/app/lib/i18n/locales";
 import { resolveSiteUrl } from "@/app/lib/seo/page-metadata";
 
 const STATIC_PATHS: ReadonlyArray<{
@@ -20,24 +21,35 @@ const toAbsoluteUrl = (siteUrl: string, path: string): string => {
   return `${siteUrl}${normalizedPath}`;
 };
 
+const toLocalizedPath = (path: string, locale: string): string => {
+  if (path === "/") {
+    return `/${locale}`;
+  }
+  return `/${locale}${path}`;
+};
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const siteUrl = resolveSiteUrl() ?? "http://localhost:3000";
   const now = new Date();
   const catalogBundle = await getCatalogBundle();
 
-  const staticPages: MetadataRoute.Sitemap = STATIC_PATHS.map((page) => ({
-    url: toAbsoluteUrl(siteUrl, page.path),
-    changeFrequency: page.changeFrequency,
-    priority: page.priority,
-    lastModified: now,
-  }));
+  const staticPages: MetadataRoute.Sitemap = appLocales.flatMap((locale) =>
+    STATIC_PATHS.map((page) => ({
+      url: toAbsoluteUrl(siteUrl, toLocalizedPath(page.path, locale)),
+      changeFrequency: page.changeFrequency,
+      priority: page.priority,
+      lastModified: now,
+    })),
+  );
 
-  const productPages: MetadataRoute.Sitemap = catalogBundle.products.map((product) => ({
-    url: toAbsoluteUrl(siteUrl, `/product/${product.id}`),
-    changeFrequency: "weekly",
-    priority: 0.8,
-    lastModified: product.updatedAt ?? product.createdAt ?? now.toISOString(),
-  }));
+  const productPages: MetadataRoute.Sitemap = appLocales.flatMap((locale) =>
+    catalogBundle.products.map((product) => ({
+      url: toAbsoluteUrl(siteUrl, `/${locale}/product/${product.id}`),
+      changeFrequency: "weekly",
+      priority: 0.8,
+      lastModified: product.updatedAt ?? product.createdAt ?? now.toISOString(),
+    })),
+  );
 
   return [...staticPages, ...productPages];
 }

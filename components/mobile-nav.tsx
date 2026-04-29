@@ -3,7 +3,7 @@
 import * as _ from "lodash";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import {
   useCallback,
@@ -15,10 +15,12 @@ import {
 import { createPortal } from "react-dom";
 
 import { navLinks } from "@/app/landing/data";
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import { appleEase } from "@/components/motion/apple-ease";
 import { NavHashLink } from "@/components/nav-hash-link";
 
 export const MobileNav = () => {
+  const locale = useLocale();
   const landingTranslations = useTranslations("Landing");
   const panelIdentifier = useId();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -53,7 +55,7 @@ export const MobileNav = () => {
   const sheet = menuOpen ? (
     <motion.div
       key="mobile-nav-sheet"
-      className="pointer-events-none fixed inset-0 z-[200] flex flex-col"
+      className="pointer-events-none fixed inset-0 z-200 flex flex-col"
       style={{ isolation: "isolate" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -106,7 +108,7 @@ export const MobileNav = () => {
             <ul className="flex flex-col divide-y divide-border/70 p-0 dark:divide-white/12">
               <li className="list-none">
                 <Link
-                  href="/cart"
+                  href={buildLocalizedPath("/cart", locale)}
                   className="flex w-full items-center justify-between py-4 text-base font-semibold uppercase tracking-wide text-foreground transition-colors active:text-brand sm:text-lg"
                   onClick={closeMenu}
                 >
@@ -138,7 +140,7 @@ export const MobileNav = () => {
                     </NavHashLink>
                   ) : (
                     <Link
-                      href={link.href}
+                      href={buildLocalizedPath(link.href, locale)}
                       className="flex w-full items-center justify-between py-4 text-base font-semibold uppercase tracking-wide text-foreground transition-colors active:text-brand sm:text-lg"
                       onClick={closeMenu}
                     >
@@ -181,7 +183,7 @@ export const MobileNav = () => {
           onClick={() => {
             setMenuOpen((previous) => !previous);
           }}
-          className="relative z-[220] flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background text-foreground shadow-sm transition hover:border-brand/30 hover:bg-muted/40 dark:border-white/10 dark:bg-zinc-900 dark:hover:border-brand/25"
+          className="relative z-220 flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-border/50 bg-background text-foreground shadow-sm transition hover:border-brand/30 hover:bg-muted/40 dark:border-white/10 dark:bg-zinc-900 dark:hover:border-brand/25"
         >
           <span className="relative flex h-[18px] w-[18px] items-center justify-center">
             <AnimatePresence mode="wait" initial={false}>

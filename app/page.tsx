@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 
 import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
 import { resolveAbsoluteUrl, resolveSiteUrl } from "@/app/lib/seo/page-metadata";
@@ -17,22 +18,26 @@ import { LanguageTransition } from "@/components/language-transition";
 
 export const generateMetadata = async () => {
   const metadataTranslations = await getTranslations("Metadata");
+  const locale = await getLocale();
   return buildAbsoluteRouteMetadata({
     pageTitle: metadataTranslations("title"),
     description: metadataTranslations("description"),
     path: "/",
+    ...(isAppLocale(locale) ? { locale } : {}),
   });
 };
 
-export default function Home() {
+export default async function Home() {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const siteUrl = resolveSiteUrl() ?? "http://localhost:3000";
-  const homeUrl = resolveAbsoluteUrl("/") ?? siteUrl;
+  const homeUrl = resolveAbsoluteUrl("/", activeLocale) ?? `${siteUrl}/${activeLocale}`;
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     name: "Oilix",
     url: siteUrl,
-    logo: resolveAbsoluteUrl("/opengraph-image") ?? `${siteUrl}/opengraph-image`,
+    logo: resolveAbsoluteUrl("/opengraph-image", activeLocale) ?? `${siteUrl}/opengraph-image`,
   };
   const websiteSchema = {
     "@context": "https://schema.org",
@@ -42,7 +47,7 @@ export default function Home() {
     inLanguage: ["ru", "uk", "en"],
     potentialAction: {
       "@type": "SearchAction",
-      target: `${siteUrl}/catalog`,
+      target: `${siteUrl}/${activeLocale}/catalog`,
       "query-input": "required name=search_term_string",
     },
   };

@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import {
   getBrandNameForProduct,
   getDiscountPercent,
@@ -10,6 +11,7 @@ import {
   type ProductCardSpecContext,
   type StoreProduct,
 } from "@/app/lib/catalog";
+import type { AppLocale } from "@/app/lib/i18n/locales";
 import { ProductCatalogImage } from "@/app/components/catalog/product-catalog-image";
 import { formatPriceUah } from "@/app/lib/format-price";
 import { CatalogCartIconButton } from "@/components/cart/catalog-cart-icon-button";
@@ -31,9 +33,10 @@ type ProductCardProps = {
   product: StoreProduct;
   labels: ProductCardLabels;
   catalog: CatalogIndexes;
+  locale: AppLocale;
 };
 
-export const ProductCard = ({ product, labels, catalog }: ProductCardProps) => {
+export const ProductCard = ({ product, labels, catalog, locale }: ProductCardProps) => {
   const discountPercent = getDiscountPercent(product);
   const effectivePriceUah = getEffectivePriceUah(product);
   const brandName = getBrandNameForProduct(product, catalog);
@@ -56,7 +59,7 @@ export const ProductCard = ({ product, labels, catalog }: ProductCardProps) => {
       className={`flex h-full w-full min-w-0 flex-col ${storefrontProductCard}`}
     >
       <Link
-        href={`/product/${encodeURIComponent(product.id)}`}
+        href={buildLocalizedPath(`/product/${encodeURIComponent(product.id)}`, locale)}
         className="group flex flex-1 flex-col p-4 pb-3 no-underline outline-none transition focus-visible:ring-2 focus-visible:ring-brand/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         aria-label={ariaLabel}
       >

@@ -12,6 +12,7 @@ import {
 } from "react";
 import { useLocale, useTranslations } from "next-intl";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
 import { CheckoutNovaPoshtaBlock } from "@/components/checkout/checkout-nova-poshta-block";
 import { CheckoutOrderSummary } from "@/components/checkout/checkout-order-summary";
 import { FormField, formInputClassName } from "@/components/forms/form-field";
@@ -67,6 +68,9 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
   const orderConfirmationLocale: AppLocale = isAppLocale(siteLocale)
     ? siteLocale
     : defaultLocale;
+  const cartPath = buildLocalizedPath("/cart", orderConfirmationLocale);
+  const homePath = buildLocalizedPath("/", orderConfirmationLocale);
+  const catalogPath = buildLocalizedPath("/catalog", orderConfirmationLocale);
   const checkoutTranslations = useTranslations("Checkout");
   const landingTranslations = useTranslations("Landing");
   const { lines, isReady, totalPriceUah, clearCart } = useCart();
@@ -93,9 +97,9 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
       return;
     }
     if (validLines.length === 0) {
-      router.replace("/cart");
+      router.replace(cartPath);
     }
-  }, [isReady, validLines.length, submitSuccess, router]);
+  }, [isReady, validLines.length, submitSuccess, router, cartPath]);
 
   const mapValidationToMessage = useCallback(
     (errorCode: string | undefined): string | undefined => {
@@ -227,13 +231,13 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
         <p className="mt-3 text-muted-foreground">{checkoutTranslations("successLead")}</p>
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <Link
-            href="/"
+            href={homePath}
             className={`inline-flex items-center justify-center ${storefrontButtonSecondary} ${storefrontButtonSecondaryPadding} dark:border-white/12`}
           >
             {checkoutTranslations("backHome")}
           </Link>
           <Link
-            href="/catalog"
+            href={catalogPath}
             className={`inline-flex items-center justify-center ${storefrontButtonPrimary} ${storefrontButtonPrimaryPaddingCompact}`}
           >
             {checkoutTranslations("backToCatalog")}
@@ -490,7 +494,7 @@ export const CheckoutPageClient = ({ npApiConfigured }: CheckoutPageClientProps)
           subtotalLabel={tr("subtotal")}
           totalLabel={tr("total")}
           editCartLabel={tr("editCart")}
-          cartHref="/cart"
+          cartHref={cartPath}
         />
       </aside>
     </div>

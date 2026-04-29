@@ -3,10 +3,11 @@
 import * as _ from "lodash";
 import { ChevronDown, Search, SlidersHorizontal } from "lucide-react";
 import { useMemo, useState, type ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { ProductCard, type ProductCardLabels } from "@/app/components/catalog/product-card";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
+import { defaultLocale, isAppLocale } from "@/app/lib/i18n/locales";
 import {
   CATALOG_SORT_IDS,
   createInitialCatalogQueryModel,
@@ -57,6 +58,8 @@ export const CatalogExplorer = ({
   priceBounds,
   catalog,
 }: CatalogExplorerProps) => {
+  const locale = useLocale();
+  const activeLocale = isAppLocale(locale) ? locale : defaultLocale;
   const catalogTranslations = useTranslations("Catalog");
   const landingTranslations = useTranslations("Landing");
 
@@ -367,6 +370,7 @@ export const CatalogExplorer = ({
                 product={product}
                 labels={cardLabels}
                 catalog={catalog}
+                locale={activeLocale}
               />
             </li>
           ))}

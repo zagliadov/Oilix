@@ -1,7 +1,9 @@
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 
+import { buildLocalizedPath } from "@/app/lib/i18n/build-localized-path";
+import { isAppLocale } from "@/app/lib/i18n/locales";
 import { isNovaPoshtaApiConfigured } from "@/app/lib/nova-poshta/env";
 import { buildStorefrontSectionMetadata } from "@/app/lib/seo/storefront-section-metadata";
 import { CheckoutPageClient } from "@/components/checkout/checkout-page-client";
@@ -21,6 +23,8 @@ export const generateMetadata = async () =>
   });
 
 export default async function CheckoutPage() {
+  const locale = await getLocale();
+  const activeLocale = isAppLocale(locale) ? locale : "uk";
   const checkoutTranslations = await getTranslations("Checkout");
   const npApiConfigured = isNovaPoshtaApiConfigured();
 
@@ -36,7 +40,7 @@ export default async function CheckoutPage() {
             <div className="w-full">
               <div className="flex flex-wrap items-center gap-4">
                 <Link
-                  href="/cart"
+                  href={buildLocalizedPath("/cart", activeLocale)}
                   className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-foreground"
                 >
                   <ArrowLeft className="h-4 w-4 shrink-0" aria-hidden strokeWidth={2} />
