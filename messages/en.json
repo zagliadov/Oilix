@@ -471,8 +471,9 @@
     "metaTitle": "404 — page not found",
     "metaDescription": "The requested page was not found. Return to the homepage or open the Oilix product catalog.",
     "title": "Page not found",
-    "lead": "The link may be outdated or the address may contain a typo. Return to the home page or open the catalog.",
-    "backHome": "Back to home",
-    "goCatalog": "Go to catalog"
+    "lead": "Looks like all stock is sold out or this page got hijacked.",
+    "backHome": "Go back",
+    "goCatalog": "Go to catalog",
+    "imageAlt": "Oilix character on the 404 page"
   }
 }
