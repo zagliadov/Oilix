@@ -466,5 +466,13 @@
     "ru": "Русский",
     "en": "English",
     "uk": "Українська"
+  },
+  "NotFound": {
+    "metaTitle": "404 — page not found",
+    "metaDescription": "The requested page was not found. Return to the homepage or open the Oilix product catalog.",
+    "title": "Page not found",
+    "lead": "The link may be outdated or the address may contain a typo. Return to the home page or open the catalog.",
+    "backHome": "Back to home",
+    "goCatalog": "Go to catalog"
   }
 }
