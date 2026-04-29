@@ -11,7 +11,13 @@ import { CartPageClient } from "@/components/cart/cart-page-client";
 import { LanguageTransition } from "@/components/language-transition";
 
 export const generateMetadata = async () =>
-  buildStorefrontSectionMetadata("Cart", "/cart");
+  ({
+    ...(await buildStorefrontSectionMetadata("Cart", "/cart")),
+    robots: {
+      index: false,
+      follow: true,
+    },
+  });
 
 export default async function CartPage() {
   const cartTranslations = await getTranslations("Cart");

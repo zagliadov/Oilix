@@ -19,7 +19,7 @@ import { renderProductDetailSpecRows } from "@/app/components/catalog/product-de
 import { formatPriceUah } from "@/app/lib/format-price";
 import { getCatalogBundle } from "@/app/lib/catalog/load-catalog";
 import { buildProductCardSpecContextFromLanding } from "@/app/lib/i18n/product-card-spec-context";
-import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
+import { buildAbsoluteRouteMetadata, resolveAbsoluteUrl, resolveSiteUrl } from "@/app/lib/seo/page-metadata";
 import type { ProductCardLabels } from "@/app/components/catalog/product-card";
 import {
   buildCatalogIndexes,
@@ -76,6 +76,7 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
     product,
     buildProductCardSpecContextFromLanding((key) => landingTranslations(key)),
   );
+  const imageUrl = getProductCardImageUrlInCatalog(product.id, catalog);
 
   return buildAbsoluteRouteMetadata({
     pageTitle: productTranslations("metaTitle", {
@@ -89,6 +90,7 @@ export const generateMetadata = async ({ params }: ProductPageProps) => {
       price: priceFormatted,
     }),
     path: productPath,
+    ...(imageUrl !== undefined ? { imageUrl } : {}),
   });
 };
 
@@ -139,9 +141,75 @@ export default async function ProductPage({ params }: ProductPageProps) {
     product.description !== undefined && product.description !== ""
       ? product.description
       : productTranslations("lead");
+  const siteUrl = resolveSiteUrl() ?? "http://localhost:3000";
+  const productUrl = resolveAbsoluteUrl(`/product/${product.id}`) ?? `${siteUrl}/product/${product.id}`;
+  const imageUrl = heroImageUrl !== undefined
+    ? resolveAbsoluteUrl(heroImageUrl) ??
+      (heroImageUrl.startsWith("http://") || heroImageUrl.startsWith("https://")
+        ? heroImageUrl
+        : `${siteUrl}${heroImageUrl}`)
+    : undefined;
+  const productStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: descriptionText,
+    brand: {
+      "@type": "Brand",
+      name: brandName,
+    },
+    sku: product.id,
+    category: categoryName,
+    ...(imageUrl !== undefined ? { image: [imageUrl] } : {}),
+    offers: {
+      "@type": "Offer",
+      url: productUrl,
+      priceCurrency: "UAH",
+      price: String(effectivePriceUah),
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+  };
+  const breadcrumbStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: productTranslations("breadcrumbCatalog"),
+        item: resolveAbsoluteUrl("/catalog") ?? `${siteUrl}/catalog`,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: categoryName,
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: product.name,
+        item: productUrl,
+      },
+    ],
+  };
 
   return (
     <div className="relative flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(productStructuredData),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbStructuredData),
+        }}
+      />
       <LandingBackground />
 
       <LandingHeader />

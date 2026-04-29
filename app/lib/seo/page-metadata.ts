@@ -4,14 +4,26 @@ import type { Metadata } from "next";
  * Optional absolute site URL for canonical URLs & Open Graph (`https://example.com`).
  * Set `NEXT_PUBLIC_SITE_URL` in deployment; metadata still works without it.
  */
-export const resolveMetadataBase = (): Metadata["metadataBase"] => {
+export const resolveSiteUrl = (): string | undefined => {
   const raw = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (raw === undefined || raw === "") {
     return undefined;
   }
   const normalized = raw.endsWith("/") ? raw.slice(0, -1) : raw;
   try {
-    return new URL(`${normalized}/`);
+    return new URL(`${normalized}/`).toString().replace(/\/$/, "");
+  } catch {
+    return undefined;
+  }
+};
+
+export const resolveMetadataBase = (): Metadata["metadataBase"] => {
+  const siteUrl = resolveSiteUrl();
+  if (siteUrl === undefined) {
+    return undefined;
+  }
+  try {
+    return new URL(`${siteUrl}/`);
   } catch {
     return undefined;
   }
@@ -32,20 +44,29 @@ const toCanonicalUrl = (
   }
 };
 
+export const resolveAbsoluteUrl = (path: string): string | undefined => {
+  return toCanonicalUrl(resolveMetadataBase(), path);
+};
+
+const DEFAULT_SOCIAL_IMAGE_PATH = "/opengraph-image";
+
 const socialMetadata = (input: {
   pageTitle: string;
   description: string;
   canonicalUrl: string | undefined;
+  imageUrl?: string;
 }): Pick<Metadata, "openGraph" | "twitter"> => ({
   openGraph: {
     title: input.pageTitle,
     description: input.description,
     ...(input.canonicalUrl !== undefined ? { url: input.canonicalUrl } : {}),
+    images: [input.imageUrl ?? DEFAULT_SOCIAL_IMAGE_PATH],
   },
   twitter: {
     card: "summary_large_image",
     title: input.pageTitle,
     description: input.description,
+    images: [input.imageUrl ?? DEFAULT_SOCIAL_IMAGE_PATH],
   },
 });
 
@@ -56,6 +77,7 @@ export type SegmentRouteMetadataInput = {
   pageTitle: string;
   description: string;
   path: string;
+  imageUrl?: string;
 };
 
 /**
@@ -66,6 +88,7 @@ export const buildSegmentRouteMetadata = ({
   pageTitle,
   description,
   path,
+  imageUrl,
 }: SegmentRouteMetadataInput): Metadata => {
   const metadataBase = resolveMetadataBase();
   const canonicalUrl = toCanonicalUrl(metadataBase, path);
@@ -74,7 +97,7 @@ export const buildSegmentRouteMetadata = ({
     title: segmentTitle,
     description,
     ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
-    ...socialMetadata({ pageTitle, description, canonicalUrl }),
+    ...socialMetadata({ pageTitle, description, canonicalUrl, imageUrl }),
   };
 };
 
@@ -82,6 +105,7 @@ export type AbsoluteRouteMetadataInput = {
   pageTitle: string;
   description: string;
   path: string;
+  imageUrl?: string;
 };
 
 /**
@@ -91,6 +115,7 @@ export const buildAbsoluteRouteMetadata = ({
   pageTitle,
   description,
   path,
+  imageUrl,
 }: AbsoluteRouteMetadataInput): Metadata => {
   const metadataBase = resolveMetadataBase();
   const canonicalUrl = toCanonicalUrl(metadataBase, path);
@@ -99,6 +124,6 @@ export const buildAbsoluteRouteMetadata = ({
     title: { absolute: pageTitle },
     description,
     ...(canonicalUrl !== undefined ? { alternates: { canonical: canonicalUrl } } : {}),
-    ...socialMetadata({ pageTitle, description, canonicalUrl }),
+    ...socialMetadata({ pageTitle, description, canonicalUrl, imageUrl }),
   };
 };

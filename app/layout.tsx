@@ -48,11 +48,13 @@ export const generateMetadata = async (): Promise<Metadata> => {
       title: metadataTranslations("title"),
       description: metadataTranslations("description"),
       locale: openGraphLocaleByAppLocale[locale] ?? locale,
+      images: ["/opengraph-image"],
     },
     twitter: {
       card: "summary_large_image",
       title: metadataTranslations("title"),
       description: metadataTranslations("description"),
+      images: ["/opengraph-image"],
     },
     robots: {
       index: true,

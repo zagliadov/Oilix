@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 
 import { buildAbsoluteRouteMetadata } from "@/app/lib/seo/page-metadata";
+import { resolveAbsoluteUrl, resolveSiteUrl } from "@/app/lib/seo/page-metadata";
 import { LandingAudience } from "@/app/components/landing/landing-audience";
 import { LandingBackground } from "@/app/components/landing/landing-background";
 import { LandingCatalog } from "@/app/components/landing/landing-catalog";
@@ -24,8 +25,51 @@ export const generateMetadata = async () => {
 };
 
 export default function Home() {
+  const siteUrl = resolveSiteUrl() ?? "http://localhost:3000";
+  const homeUrl = resolveAbsoluteUrl("/") ?? siteUrl;
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: "Oilix",
+    url: siteUrl,
+    logo: resolveAbsoluteUrl("/opengraph-image") ?? `${siteUrl}/opengraph-image`,
+  };
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Oilix",
+    url: siteUrl,
+    inLanguage: ["ru", "uk", "en"],
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/catalog`,
+      "query-input": "required name=search_term_string",
+    },
+  };
+
   return (
     <div className="relative flex min-h-dvh w-full flex-col overflow-x-clip bg-background text-foreground">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@graph": [
+              {
+                ...organizationSchema,
+                "@id": `${homeUrl}#organization`,
+              },
+              {
+                ...websiteSchema,
+                "@id": `${homeUrl}#website`,
+                publisher: {
+                  "@id": `${homeUrl}#organization`,
+                },
+              },
+            ],
+          }),
+        }}
+      />
       <HashScroll />
       <LandingBackground />
 

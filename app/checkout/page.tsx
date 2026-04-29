@@ -12,7 +12,13 @@ import { SectionShell } from "@/app/components/landing/section-shell";
 import { LanguageTransition } from "@/components/language-transition";
 
 export const generateMetadata = async () =>
-  buildStorefrontSectionMetadata("Checkout", "/checkout");
+  ({
+    ...(await buildStorefrontSectionMetadata("Checkout", "/checkout")),
+    robots: {
+      index: false,
+      follow: true,
+    },
+  });
 
 export default async function CheckoutPage() {
   const checkoutTranslations = await getTranslations("Checkout");
