@@ -130,12 +130,18 @@
     },
     "contact": {
       "title": "Order or ask about selection",
-      "lead": "Tell us your make, model and year — or what you are already looking at in the catalog. We will reply with options and delivery timing. You can later wire the form to email, messenger or CRM.",
+      "lead": "Tell us your make, model and year — or what you are already looking at in the catalog. We will reply with options and delivery timing.",
       "nameLabel": "Name",
       "emailLabel": "Email",
       "phoneLabel": "Phone",
       "consent": "By submitting the form you agree to the processing of personal data — replace with text that matches your privacy policy.",
-      "submit": "Send"
+      "submit": "Send",
+      "submitSending": "Sending…",
+      "submitSuccess": "Thank you! We have received your message and will get back to you.",
+      "submitErrorService": "Sending is unavailable right now. Please email or call us — we are here to help.",
+      "submitErrorSend": "Could not send your message. Please try again shortly.",
+      "submitErrorInvalid": "Please check the form fields and try again.",
+      "submitErrorNetwork": "No network or the server is not responding. Check your connection and try again."
     },
     "placeholders": {
       "name": "How we should address you",

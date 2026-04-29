@@ -11,11 +11,7 @@ import {
   isResendOrderSendingConfigured,
   isSmtpOrderSendingConfigured,
 } from "./order-email-config";
-import {
-  type SmtpMessage,
-  sendOrderEmailViaSmtp,
-  sendSmtpWithOrderConfig,
-} from "./send-order-email-smtp";
+import { type SmtpMessage, sendSmtpWithOrderConfig } from "./send-order-email-smtp";
 
 const sendResendMessage = async (message: SmtpMessage): Promise<boolean> => {
   const apiKey = getResendApiKey();
@@ -48,16 +44,25 @@ const sendResendMessage = async (message: SmtpMessage): Promise<boolean> => {
   return true;
 };
 
-const sendOrderEmailViaResend = async (
-  payload: CheckoutSubmitPayload,
+export const sendShopEmailMessageWithFailover = async (
+  message: SmtpMessage,
 ): Promise<{ ok: true } | { ok: false }> => {
-  const to = getOrderNotificationToEmails();
-  if (to.length === 0) {
+  if (isSmtpOrderSendingConfigured()) {
+    const smtpResult = await sendSmtpWithOrderConfig(message);
+    if (smtpResult) {
+      return { ok: true };
+    }
+    if (isResendOrderSendingConfigured()) {
+      if (process.env.NODE_ENV === "development") {
+        console.warn("[checkout email] SMTP failed, retrying via Resend");
+      }
+      const resendOk = await sendResendMessage(message);
+      return resendOk ? { ok: true } : { ok: false };
+    }
     return { ok: false };
   }
-  const { subject, text, html, replyTo } = formatCheckoutOrderEmail(payload);
-  const ok = await sendResendMessage({ to, subject, text, html, replyTo });
-  return ok ? { ok: true } : { ok: false };
+  const resendOk = await sendResendMessage(message);
+  return resendOk ? { ok: true } : { ok: false };
 };
 
 const CUSTOMER_EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -124,22 +129,18 @@ const sendCustomerOrderCopyIfRequested = async (
 export const sendCheckoutOrderEmail = async (
   payload: CheckoutSubmitPayload,
 ): Promise<{ ok: true } | { ok: false }> => {
-  let shop: { ok: true } | { ok: false };
-  if (isSmtpOrderSendingConfigured()) {
-    const smtpResult = await sendOrderEmailViaSmtp(payload);
-    if (smtpResult.ok) {
-      shop = { ok: true };
-    } else if (isResendOrderSendingConfigured()) {
-      if (process.env.NODE_ENV === "development") {
-        console.warn("[checkout email] SMTP failed, retrying via Resend");
-      }
-      shop = await sendOrderEmailViaResend(payload);
-    } else {
-      shop = { ok: false };
-    }
-  } else {
-    shop = await sendOrderEmailViaResend(payload);
+  const to = getOrderNotificationToEmails();
+  if (to.length === 0) {
+    return { ok: false };
   }
+  const { subject, text, html, replyTo } = formatCheckoutOrderEmail(payload);
+  const shop = await sendShopEmailMessageWithFailover({
+    to,
+    subject,
+    text,
+    html,
+    ...(replyTo !== undefined ? { replyTo } : {}),
+  });
 
   if (!shop.ok) {
     return { ok: false };
